@@ -318,7 +318,7 @@ export default function App() {
     return 'bg-[#050505] text-[#e0e0e0] font-sans';
   };
 
-  const isMobileMainView = isMobile && ['vazio', 'encruzilhada-1', 'encruzilhada-2', 'sobre-contacto'].includes(section);
+  const isMobileMainView = isMobile && ['encruzilhada-1', 'encruzilhada-2', 'sobre-contacto'].includes(section);
 
   return (
     <div 
@@ -808,7 +808,7 @@ export default function App() {
                   <span className={`font-mono text-[10px] tracking-[0.25em] mt-3 transition-colors duration-300 ${
                     isDarkMode ? 'text-zinc-500 group-hover:text-zinc-300' : 'text-stone-400 group-hover:text-stone-700'
                   }`}>
-                    PRESSIONAR [W] OU CLICAR PARA ENTRAR
+                    {isMobile ? 'CLICAR PARA ENTRAR' : 'PRESSIONAR [W] OU CLICAR PARA ENTRAR'}
                   </span>
                 </div>
               </div>
