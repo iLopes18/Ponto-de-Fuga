@@ -1,0 +1,6 @@
+{
+  "name": "Ponto de Fuga",
+  "description": "Portfólio imersivo tridimensional guiado por tipografia elegante e caminhos luminosos.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
