@@ -301,8 +301,19 @@ export default function App() {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) return;
     setFormStatus('sending');
+
+    const emailTo = "18isaaclopes@gmail.com";
+    const subject = encodeURIComponent(`Sinal de comunicado - ${formData.name}`);
+    const body = encodeURIComponent(
+      `Nome: ${formData.name}\n` +
+      `Email original do remetente: ${formData.email}\n\n` +
+      `Mensagem:\n${formData.message}`
+    );
+    const mailtoUrl = `mailto:${emailTo}?subject=${subject}&body=${body}`;
+
     setTimeout(() => {
       setFormStatus('success');
+      window.location.href = mailtoUrl;
       setFormData({ name: '', email: '', message: '' });
     }, 1500);
   };
@@ -601,6 +612,9 @@ export default function App() {
                     </span>
                     <span className="flex items-center gap-2">
                       <span className={`w-1 h-1 rounded-full ${isDarkMode ? 'bg-white/60' : 'bg-stone-700'}`} /> DISPONÍVEL PARA ALIANÇAS CRIATIVAS
+                    </span>
+                    <span className="flex items-center gap-2">
+                      <span className={`w-1 h-1 rounded-full ${isDarkMode ? 'bg-white/60' : 'bg-stone-700'}`} /> EMAIL // <a href="mailto:18isaaclopes@gmail.com" className={`underline transition-colors lowercase font-sans text-xs ${isDarkMode ? 'hover:text-white text-zinc-300' : 'hover:text-stone-900 text-stone-700'}`}>18isaaclopes@gmail.com</a>
                     </span>
                   </div>
                 </div>
@@ -1267,7 +1281,7 @@ export default function App() {
               <div className="relative w-full max-w-3xl mx-auto flex-1 flex flex-col items-center justify-center gap-6 z-10 px-4 md:px-0 my-4">
                 
                 {/* CENTERED: Perspective and Selected card slider */}
-                <div className="w-full relative min-h-[280px] sm:min-h-[380px] lg:min-h-[460px] flex items-center justify-center">
+                <div className="w-full relative min-h-[330px] sm:min-h-[430px] lg:min-h-[510px] flex items-center justify-center">
                   <div className={`absolute inset-0 pointer-events-none ${
                     isDarkMode ? 'bg-radial-gradient from-zinc-000/50 to-transparent' : 'bg-radial-gradient from-stone-200/40 to-transparent'
                   }`} />
@@ -1355,7 +1369,7 @@ export default function App() {
                 </div>
 
                 {/* Centered Controls under the image stack */}
-                <div className="flex items-center gap-4 mt-4 z-20">
+                <div className="flex items-center gap-4 mt-8 z-20">
                   <button 
                     onClick={() => setActiveWebIndex(prev => (prev === 0 ? retratoProjects.length - 1 : prev - 1))}
                     className={`w-10 h-10 flex items-center justify-center rounded-full border transition-all cursor-pointer ${
@@ -1451,7 +1465,7 @@ export default function App() {
               <div className="relative w-full max-w-3xl mx-auto flex-1 flex flex-col items-center justify-center gap-6 z-10 px-4 md:px-0 my-4">
                 
                 {/* CENTERED: Perspective and Selected card slider */}
-                <div className="w-full relative min-h-[280px] sm:min-h-[380px] lg:min-h-[460px] flex items-center justify-center">
+                <div className="w-full relative min-h-[330px] sm:min-h-[430px] lg:min-h-[510px] flex items-center justify-center">
                   <div className={`absolute inset-0 pointer-events-none ${
                     isDarkMode ? 'bg-radial-gradient from-zinc-000/50 to-transparent' : 'bg-radial-gradient from-stone-200/40 to-transparent'
                   }`} />
@@ -1540,7 +1554,7 @@ export default function App() {
                 </div>
 
                 {/* Centered Controls under the image stack */}
-                <div className="flex items-center gap-4 mt-4 z-20">
+                <div className="flex items-center gap-4 mt-8 z-20">
                   <button 
                     onClick={() => setActiveWebIndex(prev => (prev === 0 ? paisagemProjects.length - 1 : prev - 1))}
                     className={`w-10 h-10 flex items-center justify-center rounded-full border transition-all cursor-pointer ${
@@ -1636,7 +1650,7 @@ export default function App() {
               <div className="relative w-full max-w-3xl mx-auto flex-1 flex flex-col items-center justify-center gap-6 z-10 px-4 md:px-0 my-4">
                 
                 {/* CENTERED: Perspective and Selected card slider */}
-                <div className="w-full relative min-h-[280px] sm:min-h-[380px] lg:min-h-[460px] flex items-center justify-center">
+                <div className="w-full relative min-h-[330px] sm:min-h-[430px] lg:min-h-[510px] flex items-center justify-center">
                   <div className={`absolute inset-0 pointer-events-none ${
                     isDarkMode ? 'bg-radial-gradient from-zinc-000/50 to-transparent' : 'bg-radial-gradient from-stone-200/40 to-transparent'
                   }`} />
@@ -1725,7 +1739,7 @@ export default function App() {
                 </div>
 
                 {/* Centered Controls under the image stack */}
-                <div className="flex items-center gap-4 mt-4 z-20">
+                <div className="flex items-center gap-4 mt-8 z-20">
                   <button 
                     onClick={() => setActiveWebIndex(prev => (prev === 0 ? desportoProjects.length - 1 : prev - 1))}
                     className={`w-10 h-10 flex items-center justify-center rounded-full border transition-all cursor-pointer ${
@@ -1821,7 +1835,7 @@ export default function App() {
               <div className="relative w-full max-w-3xl mx-auto flex-1 flex flex-col items-center justify-center gap-6 z-10 px-4 md:px-0 my-4">
                 
                 {/* CENTERED: Perspective and Selected card slider */}
-                <div className="w-full relative min-h-[280px] sm:min-h-[380px] lg:min-h-[460px] flex items-center justify-center">
+                <div className="w-full relative min-h-[330px] sm:min-h-[430px] lg:min-h-[510px] flex items-center justify-center">
                   <div className={`absolute inset-0 pointer-events-none ${
                     isDarkMode ? 'bg-radial-gradient from-zinc-000/50 to-transparent' : 'bg-radial-gradient from-stone-200/40 to-transparent'
                   }`} />
@@ -1910,7 +1924,7 @@ export default function App() {
                 </div>
 
                 {/* Centered Controls under the image stack */}
-                <div className="flex items-center gap-4 mt-4 z-20">
+                <div className="flex items-center gap-4 mt-8 z-20">
                   <button 
                     onClick={() => setActiveWebIndex(prev => (prev === 0 ? arquiteturaProjects.length - 1 : prev - 1))}
                     className={`w-10 h-10 flex items-center justify-center rounded-full border transition-all cursor-pointer ${
