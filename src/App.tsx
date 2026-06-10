@@ -822,7 +822,7 @@ export default function App() {
                   <span className={`font-mono text-[10px] tracking-[0.25em] mt-3 transition-colors duration-300 ${
                     isDarkMode ? 'text-zinc-500 group-hover:text-zinc-300' : 'text-stone-400 group-hover:text-stone-700'
                   }`}>
-                    {isMobile ? 'CLICAR PARA ENTRAR' : 'PRESSIONAR [W] OU CLICAR PARA ENTRAR'}
+                    {isMobile ? 'CLICAR PARA ENTRAR' : 'PRESSIONAR [↑] OU CLICAR PARA ENTRAR'}
                   </span>
                 </div>
               </div>
@@ -852,7 +852,7 @@ export default function App() {
                 <span className={`font-serif italic font-light tracking-wide text-lg md:text-xl transition-colors ${
                   isDarkMode ? 'text-[#e0e0e0]/80' : 'text-stone-800'
                 }`}>
-                  Isaac Lopes <span className="font-mono text-xs not-italic ml-2 opacity-50">// Estúdio I // Corredor de Entrada</span>
+                  Isaac Lopes <span className="font-mono text-xs not-italic ml-2 opacity-50">// Estúdio I</span>
                 </span>
                 <span className={`font-mono text-[10px] tracking-[0.4em] transition-colors uppercase ${
                   isDarkMode ? 'text-white/40' : 'text-stone-500/50'
@@ -900,7 +900,7 @@ export default function App() {
                     isDarkMode ? 'text-zinc-400 group-hover:text-white' : 'text-stone-500 group-hover:text-stone-950'
                   }`}>
                     <span className="font-mono text-[9px] tracking-widest mr-1 group-hover:mr-3 transition-all">
-                      ABRIR RETRATOS {!isMobile && '[A]'}
+                      ABRIR RETRATOS {!isMobile && '[←]'}
                     </span>
                     <ArrowLeft className="w-3 h-3" />
                   </div>
@@ -943,7 +943,7 @@ export default function App() {
                       </div>
 
                       <span className={`font-mono text-[8px] tracking-[0.2em] uppercase leading-relaxed ${isDarkMode ? 'text-zinc-650' : 'text-stone-400'}`}>
-                        SEGUIR ADIANTE [W]
+                        SEGUIR ADIANTE {!isMobile && '[↑]'}
                       </span>
                     </div>
                   </div>
@@ -983,7 +983,7 @@ export default function App() {
                   }`}>
                     <ArrowRight className="w-3 h-3" />
                     <span className="font-mono text-[9px] tracking-widest ml-1 group-hover:ml-3 transition-all">
-                      ABRIR DESPORTO {!isMobile && '[D]'}
+                      ABRIR DESPORTO {!isMobile && '[→]'}
                     </span>
                   </div>
                 </div>
@@ -1013,14 +1013,14 @@ export default function App() {
                   {!isMobile && (
                     <p className={`text-[10px] tracking-[0.25em] uppercase font-mono transition-colors ${
                       isDarkMode ? 'text-white/25' : 'text-stone-900/40'
-                    }`}>Teclado [A] Esquerda // [D] Direita // [W] Avançar</p>
+                    }`}>Teclado [←] Esquerda // [→] Direita // [↑] Avançar</p>
                   )}
                 </div>
 
                 <div className={`w-full flex justify-between items-center font-mono text-[9px] tracking-[0.25em] border-t pt-4 mt-4 transition-colors ${
                   isDarkMode ? 'border-white/10 text-zinc-500' : 'border-stone-200 text-stone-400'
                 }`}>
-                  <span>{isMobile ? 'VOLTAR AO INÍCIO' : 'ESC / [S] VOLTAR AO INÍCIO'}</span>
+                  <span>{isMobile ? 'VOLTAR AO INÍCIO' : 'ESC / [↓] VOLTAR AO INÍCIO'}</span>
                   <span>ESTÚDIO I // PISO PRINCIPAL</span>
                 </div>
               </div>
@@ -1051,7 +1051,7 @@ export default function App() {
                 <span className={`font-serif italic font-light tracking-wide text-lg md:text-xl transition-colors ${
                   isDarkMode ? 'text-[#e0e0e0]/80' : 'text-stone-800'
                 }`}>
-                  Isaac Lopes <span className="font-mono text-xs not-italic ml-2 opacity-50">// Estúdio II // Corredor de Passagem</span>
+                  Isaac Lopes <span className="font-mono text-xs not-italic ml-2 opacity-50">// Estúdio II</span>
                 </span>
                 <span className={`font-mono text-[10px] tracking-[0.4em] transition-colors uppercase ${
                   isDarkMode ? 'text-white/40' : 'text-stone-500/50'
@@ -1099,7 +1099,7 @@ export default function App() {
                     isDarkMode ? 'text-zinc-400 group-hover:text-white' : 'text-stone-500 group-hover:text-stone-950'
                   }`}>
                     <span className="font-mono text-[9px] tracking-widest mr-1 group-hover:mr-3 transition-all">
-                      ABRIR PAISAGENS {!isMobile && '[A]'}
+                      ABRIR PAISAGENS {!isMobile && '[←]'}
                     </span>
                     <ArrowLeft className="w-3 h-3" />
                   </div>
@@ -1142,7 +1142,7 @@ export default function App() {
                       </div>
 
                       <span className={`font-mono text-[8px] tracking-[0.2em] uppercase leading-relaxed ${isDarkMode ? 'text-zinc-650' : 'text-stone-400'}`}>
-                        SEGUIR ADIANTE [W]
+                        SEGUIR ADIANTE {!isMobile && '[↑]'}
                       </span>
                     </div>
                   </div>
@@ -1182,7 +1182,7 @@ export default function App() {
                   }`}>
                     <ArrowRight className="w-3 h-3" />
                     <span className="font-mono text-[9px] tracking-widest ml-1 group-hover:ml-3 transition-all">
-                      ABRIR ARQUITETURA {!isMobile && '[D]'}
+                      ABRIR ARQUITETURA {!isMobile && '[→]'}
                     </span>
                   </div>
                 </div>
@@ -1212,14 +1212,14 @@ export default function App() {
                   {!isMobile && (
                     <p className={`text-[10px] tracking-[0.25em] uppercase font-mono transition-colors ${
                       isDarkMode ? 'text-white/25' : 'text-stone-900/40'
-                    }`}>Teclado [A] Esquerda // [D] Direita // [W] Avançar</p>
+                    }`}>Teclado [←] Esquerda // [→] Direita // [↑] Avançar</p>
                   )}
                 </div>
 
                 <div className={`w-full flex justify-between items-center font-mono text-[9px] tracking-[0.25em] border-t pt-4 mt-4 transition-colors ${
                   isDarkMode ? 'border-white/10 text-zinc-500' : 'border-stone-200 text-stone-400'
                 }`}>
-                  <span>{isMobile ? 'REVERTER PARA O ESTÚDIO I' : 'ESC / [S] REVERTER PARA O ESTÚDIO I'}</span>
+                  <span>{isMobile ? 'REVERTER PARA O ESTÚDIO I' : 'ESC / [↓] REVERTER PARA O ESTÚDIO I'}</span>
                   <span>ESTÚDIO II // PISO SUPERIOR</span>
                 </div>
               </div>
@@ -1273,7 +1273,7 @@ export default function App() {
                   }`}
                 >
                   <X className="w-4 h-4" /> 
-                  <span className="hidden sm:inline">VOLTAR [S]</span>
+                  <span className="hidden sm:inline">VOLTAR [↓]</span>
                 </button>
               </div>
 
@@ -1402,7 +1402,7 @@ export default function App() {
               <div className={`w-full flex justify-between items-center font-mono text-[9px] tracking-widest border-t pt-6 transition-colors ${
                 isDarkMode ? 'border-white/10 text-zinc-500' : 'border-stone-200 text-stone-400'
               }`}>
-                <span>{isMobile ? 'CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO' : '[A] ANTERIOR // [D] SEGUINTE // CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO'}</span>
+                <span>{isMobile ? 'CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO' : '[←] ANTERIOR // [→] SEGUINTE // CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO'}</span>
                 <span className={`cursor-pointer transition-colors ${
                   isDarkMode ? 'hover:text-white' : 'hover:text-stone-900 hover:font-bold'
                 }`} onClick={() => navigateTo('encruzilhada-1')}>VOLTAR PARA ESTÚDIO I</span>
@@ -1457,7 +1457,7 @@ export default function App() {
                   }`}
                 >
                   <X className="w-4 h-4" /> 
-                  <span className="hidden sm:inline">VOLTAR [S]</span>
+                  <span className="hidden sm:inline">VOLTAR [↓]</span>
                 </button>
               </div>
 
@@ -1587,7 +1587,7 @@ export default function App() {
               <div className={`w-full flex justify-between items-center font-mono text-[9px] tracking-widest border-t pt-6 transition-colors ${
                 isDarkMode ? 'border-white/10 text-zinc-500' : 'border-stone-200 text-stone-400'
               }`}>
-                <span>{isMobile ? 'CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO' : '[A] ANTERIOR // [D] SEGUINTE // CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO'}</span>
+                <span>{isMobile ? 'CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO' : '[←] ANTERIOR // [→] SEGUINTE // CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO'}</span>
                 <span className={`cursor-pointer transition-colors ${
                   isDarkMode ? 'hover:text-white' : 'hover:text-stone-900 hover:font-bold'
                 }`} onClick={() => navigateTo('encruzilhada-2')}>VOLTAR PARA ESTÚDIO II</span>
@@ -1642,7 +1642,7 @@ export default function App() {
                   }`}
                 >
                   <X className="w-4 h-4" /> 
-                  <span className="hidden sm:inline">VOLTAR [S]</span>
+                  <span className="hidden sm:inline">VOLTAR [↓]</span>
                 </button>
               </div>
 
@@ -1772,7 +1772,7 @@ export default function App() {
               <div className={`w-full flex justify-between items-center font-mono text-[9px] tracking-widest border-t pt-6 transition-colors ${
                 isDarkMode ? 'border-white/10 text-zinc-500' : 'border-stone-200 text-stone-400'
               }`}>
-                <span>{isMobile ? 'CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO' : '[A] ANTERIOR // [D] SEGUINTE // CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO'}</span>
+                <span>{isMobile ? 'CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO' : '[←] ANTERIOR // [→] SEGUINTE // CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO'}</span>
                 <span className={`cursor-pointer transition-colors ${
                   isDarkMode ? 'hover:text-white' : 'hover:text-stone-900 hover:font-bold'
                 }`} onClick={() => navigateTo('encruzilhada-1')}>VOLTAR PARA ESTÚDIO I</span>
@@ -1827,7 +1827,7 @@ export default function App() {
                   }`}
                 >
                   <X className="w-4 h-4" /> 
-                  <span className="hidden sm:inline">VOLTAR [S]</span>
+                  <span className="hidden sm:inline">VOLTAR [↓]</span>
                 </button>
               </div>
 
@@ -1957,7 +1957,7 @@ export default function App() {
               <div className={`w-full flex justify-between items-center font-mono text-[9px] tracking-widest border-t pt-6 transition-colors ${
                 isDarkMode ? 'border-white/10 text-zinc-500' : 'border-stone-200 text-stone-400'
               }`}>
-                <span>{isMobile ? 'CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO' : '[A] ANTERIOR // [D] SEGUINTE // CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO'}</span>
+                <span>{isMobile ? 'CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO' : '[←] ANTERIOR // [→] SEGUINTE // CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO'}</span>
                 <span className={`cursor-pointer transition-colors ${
                   isDarkMode ? 'hover:text-white' : 'hover:text-stone-900 hover:font-bold'
                 }`} onClick={() => navigateTo('encruzilhada-2')}>VOLTAR PARA ESTÚDIO II</span>
@@ -2092,7 +2092,7 @@ export default function App() {
                       <span className={`font-mono text-[9px] ${
                         isDarkMode ? 'text-zinc-650' : 'text-stone-400'
                       }`}>
-                        {isMobile ? 'SÉRIE' : '[A] SÉRIE [D]'}
+                        {isMobile ? 'SÉRIE' : '[←] SÉRIE [→]'}
                       </span>
 
                       <button 
@@ -2163,7 +2163,7 @@ export default function App() {
                   }`}
                 >
                   <X className="w-4 h-4" /> 
-                  <span className="hidden sm:inline">SAIR [S]</span>
+                  <span className="hidden sm:inline">SAIR [↓]</span>
                 </button>
               </div>
 
@@ -2373,7 +2373,7 @@ export default function App() {
               <div className={`w-full flex justify-between items-center font-mono text-[9px] tracking-widest border-t pt-6 transition-colors ${
                 isDarkMode ? 'border-white/10 text-zinc-500' : 'border-stone-200 text-stone-400'
               }`}>
-                <span>{isMobile ? 'CLIQUE NO CANTO PARA SAIR DESTA VISTA' : 'PRESSIONE [S] OU CLIQUE NO CANTO PARA SAIR DESTA VISTA'}</span>
+                <span>{isMobile ? 'CLIQUE NO CANTO PARA SAIR DESTA VISTA' : 'PRESSIONE [↓] OU CLIQUE NO CANTO PARA SAIR DESTA VISTA'}</span>
                 <span className={`cursor-pointer transition-colors ${
                   isDarkMode ? 'hover:text-white' : 'hover:text-stone-900 hover:font-bold'
                 }`} onClick={() => navigateTo('encruzilhada-2')}>REGRESSAR AO CONTEXTO</span>
