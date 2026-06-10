@@ -50,7 +50,7 @@ export const retratoProjects: Project[] = [
     title: 'Olhar Translúcido',
     subtitle: 'Expressões em Luz de Claraboia',
     description: 'Um estudo intimista tirado em película de grão fino com luz indireta vinda do teto. Cada detalhe da pele e do olhar revela um diálogo silencioso e honesto entre o sujeito e a objetiva.',
-    image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1200&auto=format&fit=crop',
+    image: '/collection_I/be-1.jpg',
     tags: ['Portra 400', 'Luz Natural', 'Estúdio'],
     year: '2025'
   },

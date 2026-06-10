@@ -1165,11 +1165,13 @@ export default function App() {
                           }}
                         >
                           {/* Aspect block holding portrait picture */}
-                          <div className="aspect-[4/5] relative overflow-hidden bg-[#030303] group">
+                          <div className={`aspect-[4/5] relative overflow-hidden group transition-colors duration-1000 ${
+                            isDarkMode ? 'bg-[#030303]' : 'bg-stone-100'
+                          }`}>
                             <img 
                               src={proj.image} 
                               alt={proj.title}
-                              className="w-full h-full object-cover select-none pointer-events-none"
+                              className="w-full h-full object-contain select-none pointer-events-none"
                               referrerPolicy="no-referrer"
                             />
                             <div 
