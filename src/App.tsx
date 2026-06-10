@@ -33,12 +33,12 @@ export const collections = [
   {
     id: 'collection-1',
     folderName: 'col-1',
-    title: 'Retratos',
-    displayTitle: 'Retratos Analógicos',
-    categoryLabel: 'Galeria Analógica',
+    title: 'Antes do Amanhã',
+    displayTitle: 'Entre Hoje e Amanhã',
+    categoryLabel: 'Ponto de Fuga I',
     studio: 'ESTÚDIO I',
     studioKey: 'encruzilhada-1',
-    description: 'Intimidade esculpida e ligada por luz natural suave. Narrativas humanas reveladas através de olhares em formato médio.',
+    description: 'Entre luzes artificiais e conversas esquecidas pelo tempo, Antes do Amanhã captura os rostos, os encontros e a euforia de uma geração suspensa entre a responsabilidade do dia seguinte e a liberdade da noite.',
     projects: retratoProjects,
   },
   {
@@ -1198,13 +1198,6 @@ export default function App() {
                               className="absolute inset-0 bg-transparent cursor-pointer" 
                               onClick={() => setSelectedPhoto(proj)}
                             />
-                            
-                            {/* Fine art details on hover */}
-                            <div className="absolute top-4 left-4 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                              {proj.tags.map((tg, i) => (
-                                <span key={i} className="font-mono text-[8px] tracking-widest bg-black/8 w-fit px-2 py-0.5 rounded text-white border border-white/10 dark:bg-black/80">{tg}</span>
-                              ))}
-                            </div>
 
                             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 pointer-events-none">
                               <span className={`font-mono text-xs tracking-widest border px-4 py-2 rounded ${
