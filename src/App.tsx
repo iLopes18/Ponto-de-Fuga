@@ -24,21 +24,62 @@ import {
 import { SpaceSection, Project } from './types';
 import { paisagemProjects, retratoProjects, desportoProjects, arquiteturaProjects } from './data';
 
+const getRomanNumeral = (num: number) => {
+  const map = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
+  return map[num] || num.toString();
+};
+
+export const collections = [
+  {
+    id: 'collection-1',
+    folderName: 'col-1',
+    title: 'Retratos',
+    displayTitle: 'Retratos Analógicos',
+    categoryLabel: 'Galeria Analógica',
+    studio: 'ESTÚDIO I',
+    studioKey: 'encruzilhada-1',
+    description: 'Intimidade esculpida e ligada por luz natural suave. Narrativas humanas reveladas através de olhares em formato médio.',
+    projects: retratoProjects,
+  },
+  {
+    id: 'collection-2',
+    folderName: 'col-2',
+    title: 'Desporto',
+    displayTitle: 'Desporto Cinético',
+    categoryLabel: 'Instantâneos Dinâmicos',
+    studio: 'ESTÚDIO I',
+    studioKey: 'encruzilhada-1',
+    description: 'Aceleração extrema, foco cinético e dinâmicas puras congeladas em frações de segundo a alta velocidade.',
+    projects: desportoProjects,
+  },
+  {
+    id: 'collection-3',
+    folderName: 'col-3',
+    title: 'Paisagens',
+    displayTitle: 'Paisagens Silenciosas',
+    categoryLabel: 'Horizontes Contemplativos',
+    studio: 'ESTÚDIO II',
+    studioKey: 'encruzilhada-2',
+    description: 'Névoas em longa exposição, geometrias da natureza e o silêncio vasto capturado sob perspetivas serenas.',
+    projects: paisagemProjects,
+  },
+  {
+    id: 'collection-4',
+    folderName: 'col-4',
+    title: 'Arquitetura',
+    displayTitle: 'Arquitetura Brutalista',
+    categoryLabel: 'Brutalismo e Espaço',
+    studio: 'ESTÚDIO II',
+    studioKey: 'encruzilhada-2',
+    description: 'A solidez das formas de betão, o jogo rigoroso de sombras e reflexos nas estruturas urbanas contemporâneas.',
+    projects: arquiteturaProjects,
+  }
+];
+
 const getCollectionDescription = (photo: Project | null) => {
   if (!photo) return '';
-  if (retratoProjects.some(p => p.id === photo.id)) {
-    return 'Intimidade esculpida e ligada por luz natural suave. Narrativas humanas reveladas através de olhares em formato médio.';
-  }
-  if (paisagemProjects.some(p => p.id === photo.id)) {
-    return 'Névoas em longa exposição, geometrias da natureza e o silêncio vasto capturado sob perspetivas serenas.';
-  }
-  if (desportoProjects.some(p => p.id === photo.id)) {
-    return 'Aceleração extrema, foco cinético e dinâmicas puras congeladas em frações de segundo a alta velocidade.';
-  }
-  if (arquiteturaProjects.some(p => p.id === photo.id)) {
-    return 'A solidez das formas de betão, o jogo rigoroso de sombras e reflexos nas estruturas urbanas contemporâneas.';
-  }
-  return '';
+  const col = collections.find(c => c.projects.some(p => p.id === photo.id));
+  return col ? col.description : '';
 };
 
 export default function App() {
@@ -136,121 +177,69 @@ export default function App() {
         if (key === 'W' || code === 'ArrowUp' || key === ' ' || code === 'Space') {
           navigateTo('encruzilhada-1');
         }
-      } else if (section === 'encruzilhada-1') {
+      } else if (section.startsWith('encruzilhada-')) {
+        const currentFloor = parseInt(section.split('-')[1]);
+        const numFloors = Math.ceil(collections.length / 2);
+        const isOdd = collections.length % 2 !== 0;
+        const isLastFloor = currentFloor === numFloors;
+
+        const leftIdx = (currentFloor - 1) * 2;
+        const rightIdx = leftIdx + 1;
+        const leftCol = collections[leftIdx];
+        const rightCol = rightIdx < collections.length ? collections[rightIdx] : null;
+
         if (key === 'A' || code === 'ArrowLeft') {
-          navigateTo('retratos');
+          navigateTo(leftCol.folderName);
           setActiveWebIndex(0);
         } else if (key === 'D' || code === 'ArrowRight') {
-          navigateTo('desporto');
-          setActiveWebIndex(0);
+          if (isLastFloor && isOdd) {
+            navigateTo('sobre-contacto');
+          } else if (rightCol) {
+            navigateTo(rightCol.folderName);
+            setActiveWebIndex(0);
+          }
         } else if (key === 'W' || code === 'ArrowUp') {
-          navigateTo('encruzilhada-2');
+          if (!isLastFloor) {
+            navigateTo(`encruzilhada-${currentFloor + 1}`);
+          } else if (!isOdd) {
+            navigateTo('sobre-contacto');
+          }
         } else if (key === 'S' || code === 'ArrowDown') {
-          navigateTo('vazio');
+          if (currentFloor === 1) {
+            navigateTo('vazio');
+          } else {
+            navigateTo(`encruzilhada-${currentFloor - 1}`);
+          }
         }
-      } else if (section === 'encruzilhada-2') {
-        if (key === 'A' || code === 'ArrowLeft') {
-          navigateTo('paisagens');
-          setActiveWebIndex(0);
-        } else if (key === 'D' || code === 'ArrowRight') {
-          navigateTo('arquitetura');
-          setActiveWebIndex(0);
-        } else if (key === 'W' || code === 'ArrowUp') {
-          navigateTo('sobre-contacto');
-        } else if (key === 'S' || code === 'ArrowDown') {
-          navigateTo('encruzilhada-1');
-        }
-      } else if (section === 'retratos') {
+      } else if (collections.some(c => c.folderName === section)) {
+        const activeCol = collections.find(c => c.folderName === section)!;
+        const projects = activeCol.projects;
+
         if (selectedPhoto) {
           if (e.key === 'Escape') {
             setSelectedPhoto(null);
           } else if (key === 'A' || code === 'ArrowLeft') {
-            const idx = retratoProjects.findIndex(p => p.id === selectedPhoto.id);
-            const nextIdx = idx === 0 ? retratoProjects.length - 1 : idx - 1;
-            setSelectedPhoto(retratoProjects[nextIdx]);
+            const idx = projects.findIndex(p => p.id === selectedPhoto.id);
+            const nextIdx = idx === 0 ? projects.length - 1 : idx - 1;
+            setSelectedPhoto(projects[nextIdx]);
           } else if (key === 'D' || code === 'ArrowRight') {
-            const idx = retratoProjects.findIndex(p => p.id === selectedPhoto.id);
-            const nextIdx = idx === retratoProjects.length - 1 ? 0 : idx + 1;
-            setSelectedPhoto(retratoProjects[nextIdx]);
+            const idx = projects.findIndex(p => p.id === selectedPhoto.id);
+            const nextIdx = idx === projects.length - 1 ? 0 : idx + 1;
+            setSelectedPhoto(projects[nextIdx]);
           }
         } else {
           if (key === 'S' || code === 'ArrowDown' || e.key === 'Escape') {
-            navigateTo('encruzilhada-1');
+            navigateTo(activeCol.studioKey);
           } else if (key === 'A' || code === 'ArrowLeft') {
-            setActiveWebIndex(prev => (prev === 0 ? retratoProjects.length - 1 : prev - 1));
+            setActiveWebIndex(prev => (prev === 0 ? projects.length - 1 : prev - 1));
           } else if (key === 'D' || code === 'ArrowRight') {
-            setActiveWebIndex(prev => (prev === retratoProjects.length - 1 ? 0 : prev + 1));
-          }
-        }
-      } else if (section === 'paisagens') {
-        if (selectedPhoto) {
-          if (e.key === 'Escape') {
-            setSelectedPhoto(null);
-          } else if (key === 'A' || code === 'ArrowLeft') {
-            const idx = paisagemProjects.findIndex(p => p.id === selectedPhoto.id);
-            const nextIdx = idx === 0 ? paisagemProjects.length - 1 : idx - 1;
-            setSelectedPhoto(paisagemProjects[nextIdx]);
-          } else if (key === 'D' || code === 'ArrowRight') {
-            const idx = paisagemProjects.findIndex(p => p.id === selectedPhoto.id);
-            const nextIdx = idx === paisagemProjects.length - 1 ? 0 : idx + 1;
-            setSelectedPhoto(paisagemProjects[nextIdx]);
-          }
-        } else {
-          if (key === 'S' || code === 'ArrowDown' || e.key === 'Escape') {
-            navigateTo('encruzilhada-2');
-          } else if (key === 'A' || code === 'ArrowLeft') {
-            setActiveWebIndex(prev => (prev === 0 ? paisagemProjects.length - 1 : prev - 1));
-          } else if (key === 'D' || code === 'ArrowRight') {
-            setActiveWebIndex(prev => (prev === paisagemProjects.length - 1 ? 0 : prev + 1));
-          }
-        }
-      } else if (section === 'desporto') {
-        if (selectedPhoto) {
-          if (e.key === 'Escape') {
-            setSelectedPhoto(null);
-          } else if (key === 'A' || code === 'ArrowLeft') {
-            const idx = desportoProjects.findIndex(p => p.id === selectedPhoto.id);
-            const nextIdx = idx === 0 ? desportoProjects.length - 1 : idx - 1;
-            setSelectedPhoto(desportoProjects[nextIdx]);
-          } else if (key === 'D' || code === 'ArrowRight') {
-            const idx = desportoProjects.findIndex(p => p.id === selectedPhoto.id);
-            const nextIdx = idx === desportoProjects.length - 1 ? 0 : idx + 1;
-            setSelectedPhoto(desportoProjects[nextIdx]);
-          }
-        } else {
-          if (key === 'S' || code === 'ArrowDown' || e.key === 'Escape') {
-            navigateTo('encruzilhada-1');
-          } else if (key === 'A' || code === 'ArrowLeft') {
-            setActiveWebIndex(prev => (prev === 0 ? desportoProjects.length - 1 : prev - 1));
-          } else if (key === 'D' || code === 'ArrowRight') {
-            setActiveWebIndex(prev => (prev === desportoProjects.length - 1 ? 0 : prev + 1));
-          }
-        }
-      } else if (section === 'arquitetura') {
-        if (selectedPhoto) {
-          if (e.key === 'Escape') {
-            setSelectedPhoto(null);
-          } else if (key === 'A' || code === 'ArrowLeft') {
-            const idx = arquiteturaProjects.findIndex(p => p.id === selectedPhoto.id);
-            const nextIdx = idx === 0 ? arquiteturaProjects.length - 1 : idx - 1;
-            setSelectedPhoto(arquiteturaProjects[nextIdx]);
-          } else if (key === 'D' || code === 'ArrowRight') {
-            const idx = arquiteturaProjects.findIndex(p => p.id === selectedPhoto.id);
-            const nextIdx = idx === arquiteturaProjects.length - 1 ? 0 : idx + 1;
-            setSelectedPhoto(arquiteturaProjects[nextIdx]);
-          }
-        } else {
-          if (key === 'S' || code === 'ArrowDown' || e.key === 'Escape') {
-            navigateTo('encruzilhada-2');
-          } else if (key === 'A' || code === 'ArrowLeft') {
-            setActiveWebIndex(prev => (prev === 0 ? arquiteturaProjects.length - 1 : prev - 1));
-          } else if (key === 'D' || code === 'ArrowRight') {
-            setActiveWebIndex(prev => (prev === arquiteturaProjects.length - 1 ? 0 : prev + 1));
+            setActiveWebIndex(prev => (prev === projects.length - 1 ? 0 : prev + 1));
           }
         }
       } else if (section === 'sobre-contacto') {
         if (key === 'S' || code === 'ArrowDown' || e.key === 'Escape') {
-          navigateTo('encruzilhada-2');
+          const numFloors = Math.ceil(collections.length / 2);
+          navigateTo(`encruzilhada-${numFloors}`);
         }
       }
     };
@@ -329,7 +318,7 @@ export default function App() {
     return 'bg-[#050505] text-[#e0e0e0] font-sans';
   };
 
-  const isMobileMainView = isMobile && ['encruzilhada-1', 'encruzilhada-2', 'sobre-contacto'].includes(section);
+  const isMobileMainView = isMobile && (section.startsWith('encruzilhada-') || section === 'sobre-contacto');
 
   return (
     <div 
@@ -479,93 +468,60 @@ export default function App() {
 
               {/* Collections List */}
               <div className="w-full flex flex-col gap-10">
-                {[
-                  {
-                    id: 'retratos',
-                    title: 'Retratos Analógicos',
-                    slug: 'retratos' as const,
-                    image: retratoProjects[0].image,
-                    subtitle: 'SÉRIE I // RETRATOS',
-                    desc: 'Intimidade esculpida e ligada por luz natural suave. Narrativas humanas reveladas através de olhares em formato médio.',
-                    tilt: -1.5,
-                  },
-                  {
-                    id: 'desporto',
-                    title: 'Desporto Cinético',
-                    slug: 'desporto' as const,
-                    image: desportoProjects[0].image,
-                    subtitle: 'SÉRIE II // INSTANTES',
-                    desc: 'Aceleração extrema, foco cinético e dinâmicas puras congeladas em frações de segundo a alta velocidade.',
-                    tilt: 1.5,
-                  },
-                  {
-                    id: 'paisagens',
-                    title: 'Paisagens Silenciosas',
-                    slug: 'paisagens' as const,
-                    image: paisagemProjects[0].image,
-                    subtitle: 'SÉRIE III // NATUREZA',
-                    desc: 'Névoas em longa exposição, geometrias da natureza e o silêncio vasto capturado sob perspetivas serenas.',
-                    tilt: -1.5,
-                  },
-                  {
-                    id: 'arquitetura',
-                    title: 'Arquitetura Brutalista',
-                    slug: 'arquitetura' as const,
-                    image: arquiteturaProjects[0].image,
-                    subtitle: 'SÉRIE IV // GEOMETRIA',
-                    desc: 'A solidez das formas de betão, o jogo rigoroso de sombras e reflexos nas estruturas urbanas contemporâneas.',
-                    tilt: 1.5,
-                  },
-                ].map((col) => (
-                  <motion.div
-                    key={col.id}
-                    whileHover={{ scale: 1.01, rotate: 0 }}
-                    whileTap={{ scale: 0.99 }}
-                    onClick={() => {
-                      navigateTo(col.slug);
-                      setActiveWebIndex(0);
-                    }}
-                    className={`w-full max-w-md rounded border p-4 cursor-pointer transition-all duration-300 ${
-                      isDarkMode 
-                        ? 'bg-[#0a0a0a] border-white/5 active:border-white/20' 
-                        : 'bg-stone-50 border-stone-200 active:border-stone-850 shadow-sm'
-                    }`}
-                    style={{
-                      transform: `rotate(${col.tilt}deg)`
-                    }}
-                  >
-                    <div className="aspect-[4/3] w-full overflow-hidden rounded relative bg-stone-900 mb-4 group">
-                      <img 
-                        src={col.image} 
-                        alt={col.title}
-                        className="w-full h-full object-cover select-none pointer-events-none transition-transform duration-500 group-hover:scale-105"
-                        referrerPolicy="no-referrer"
-                      />
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent p-4 flex justify-between items-end">
-                        <span className="font-mono text-[8px] tracking-[0.2em] text-white/50">VER COLECÇÃO</span>
-                        <ArrowRight className="w-3.5 h-3.5 text-white/80 rotate-[-45deg]" />
+                {collections.map((col, idx) => {
+                  const tilt = idx % 2 === 0 ? -1.5 : 1.5;
+                  const numRoman = getRomanNumeral(idx + 1);
+                  return (
+                    <motion.div
+                      key={col.id}
+                      whileHover={{ scale: 1.01, rotate: 0 }}
+                      whileTap={{ scale: 0.99 }}
+                      onClick={() => {
+                        navigateTo(col.folderName);
+                        setActiveWebIndex(0);
+                      }}
+                      className={`w-full max-w-md rounded border p-4 cursor-pointer transition-all duration-300 ${
+                        isDarkMode 
+                          ? 'bg-[#0a0a0a] border-white/5 active:border-white/20' 
+                          : 'bg-stone-50 border-stone-200 active:border-stone-850 shadow-sm'
+                      }`}
+                      style={{
+                        transform: `rotate(${tilt}deg)`
+                      }}
+                    >
+                      <div className="aspect-[4/3] w-full overflow-hidden rounded relative bg-stone-900 mb-4 group">
+                        <img 
+                          src={col.projects[0]?.image || ''} 
+                          alt={col.title}
+                          className="w-full h-full object-cover select-none pointer-events-none transition-transform duration-500 group-hover:scale-105"
+                          referrerPolicy="no-referrer"
+                        />
+                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent p-4 flex justify-between items-end">
+                          <span className="font-mono text-[8px] tracking-[0.2em] text-white/50">VER COLECÇÃO</span>
+                          <ArrowRight className="w-3.5 h-3.5 text-white/80 rotate-[-45deg]" />
+                        </div>
                       </div>
-                    </div>
-                    
-                    <span className={`font-mono text-[9px] tracking-[0.25em] block mb-1 ${
-                      isDarkMode ? 'text-zinc-500' : 'text-stone-450'
-                    }`}>
-                      {col.subtitle}
-                    </span>
-                    
-                    <h3 className={`font-serif italic text-xl font-light tracking-wide transition-colors ${
-                      isDarkMode ? 'text-white' : 'text-stone-900 font-bold'
-                    }`}>
-                      {col.title}
-                    </h3>
-                    
-                    <p className={`font-sans font-light text-xs leading-relaxed mt-2 ${
-                      isDarkMode ? 'text-zinc-400' : 'text-stone-600'
-                    }`}>
-                      {col.desc}
-                    </p>
-                  </motion.div>
-                ))}
+                      
+                      <span className={`font-mono text-[9px] tracking-[0.25em] block mb-1 ${
+                        isDarkMode ? 'text-zinc-500' : 'text-stone-450'
+                      }`}>
+                        {`SÉRIE ${numRoman} // ${col.title.toUpperCase()}`}
+                      </span>
+                      
+                      <h3 className={`font-serif italic text-xl font-light tracking-wide transition-colors ${
+                        isDarkMode ? 'text-white' : 'text-stone-900 font-bold'
+                      }`}>
+                        {col.displayTitle}
+                      </h3>
+                      
+                      <p className={`font-sans font-light text-xs leading-relaxed mt-2 ${
+                        isDarkMode ? 'text-zinc-400' : 'text-stone-600'
+                      }`}>
+                        {col.description}
+                      </p>
+                    </motion.div>
+                  );
+                })}
               </div>
 
               {/* Bio & Contact Form Block */}
@@ -828,1142 +784,476 @@ export default function App() {
               </div>
             </motion.div>
           )}
-             {/* ================= SECTION 2: ENCRUZILHADA I (RETRATOS & DESPORTO) ================= */}
-          {section === 'encruzilhada-1' && (
-            <motion.div
-              key="encruzilhada-1"
-              className={`absolute inset-0 flex flex-col justify-between items-center p-8 md:p-14 z-10 transition-colors duration-1000 ${
-                isDarkMode ? 'text-zinc-100' : 'text-stone-900'
-              }`}
-              initial={{ opacity: 0, scale: 0.7, filter: 'blur(10px)' }}
-              animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-              exit={{ 
-                opacity: 0,
-                scale: 1.2,
-                filter: 'blur(8px)',
-                transition: { duration: 0.8, ease: 'easeInOut' }
-              }}
-              style={{
-                transform: `rotateY(${mousePosition.x * -0.05}deg) rotateX(${mousePosition.y * 0.05}deg)`,
-              }}
-            >
-              {/* Header Info */}
-              <div className="w-full flex justify-between items-center z-10">
-                <span className={`font-serif italic font-light tracking-wide text-lg md:text-xl transition-colors ${
-                  isDarkMode ? 'text-[#e0e0e0]/80' : 'text-stone-800'
-                }`}>
-                  Isaac Lopes <span className="font-mono text-xs not-italic ml-2 opacity-50">// Estúdio I</span>
-                </span>
-                <span className={`font-mono text-[10px] tracking-[0.4em] transition-colors uppercase ${
-                  isDarkMode ? 'text-white/40' : 'text-stone-500/50'
-                }`}>
-                  RETRATOS E DESPORTO
-                </span>
-              </div>
+             {/* =================             {/* ================= DYNAMIC FLOOR (CROSSROAD) SECTIONS ================= */}
+          {section.startsWith('encruzilhada-') && (() => {
+            const currentFloor = parseInt(section.split('-')[1]);
+            const numFloors = Math.ceil(collections.length / 2);
+            const isOdd = collections.length % 2 !== 0;
+            const isLastFloor = currentFloor === numFloors;
 
-              {/* Central Area: Left / Right Options as a physical corridor */}
-              <div 
-                id="crossroad-choices-1"
-                className="w-full max-w-6xl flex-grow grid grid-cols-1 md:grid-cols-12 gap-8 items-center justify-center my-auto relative z-20 overflow-hidden px-4"
-                style={{ perspective: '1600px' }}
+            const leftIdx = (currentFloor - 1) * 2;
+            const rightIdx = leftIdx + 1;
+
+            const leftCol = collections[leftIdx];
+            const rightCol = rightIdx < collections.length ? collections[rightIdx] : null;
+
+            return (
+              <motion.div
+                key={`floor-${currentFloor}`}
+                className={`absolute inset-0 flex flex-col justify-between items-center p-8 md:p-14 z-10 transition-colors duration-1000 ${
+                  isDarkMode ? 'text-zinc-100' : 'text-stone-900'
+                }`}
+                initial={{ opacity: 0, scale: 0.7, filter: 'blur(10px)' }}
+                animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                exit={{ 
+                  opacity: 0, 
+                  scale: 1.2, 
+                  filter: 'blur(8px)',
+                  transition: { duration: 0.8, ease: 'easeInOut' }
+                }}
+                style={{
+                  transform: `rotateY(${mousePosition.x * -0.05}deg) rotateX(${mousePosition.y * 0.05}deg)`,
+                }}
               >
-                {/* Corredor Parede Esquerda: RETRATOS */}
-                <div 
-                  className="md:col-span-4 flex flex-col items-center md:items-end justify-center text-center md:text-right cursor-pointer group p-6 transition-all duration-500 hover:z-30 rounded-lg hover:bg-stone-500/5"
-                  style={{
-                    transform: `rotateY(${24 + mousePosition.x * -0.05}deg) translateZ(-40px)`,
-                    transformStyle: 'preserve-3d'
-                  }}
-                  onClick={() => { navigateTo('retratos'); setActiveWebIndex(0); }}
-                >
-                  <span className={`text-[9px] tracking-[0.5em] uppercase mb-3 transition-colors ${
-                    isDarkMode ? 'text-white/30' : 'text-stone-550/40'
-                  }`}>Galeria Analógica</span>
-                  
-                  <h3 className={`font-serif italic text-3xl md:text-4xl font-light transition-all tracking-wide ${
-                    isDarkMode ? 'text-white/80 group-hover:text-white' : 'text-stone-800 group-hover:text-black'
+                {/* Header Info */}
+                <div className="w-full flex justify-between items-center z-10">
+                  <span className={`font-serif italic font-light tracking-wide text-lg md:text-xl transition-colors ${
+                    isDarkMode ? 'text-[#e0e0e0]/80' : 'text-stone-800'
                   }`}>
-                    RETRATOS
-                  </h3>
-                  
-                  <div className={`w-12 h-[1px] mt-3 mb-4 transition-all self-center md:self-end ${
-                    isDarkMode ? 'bg-white/20 group-hover:bg-white group-hover:w-20' : 'bg-stone-300 group-hover:bg-stone-900 group-hover:w-20'
-                  }`} />
-                  
-                  <p className={`font-mono text-[10px] leading-relaxed tracking-wider max-w-[240px] transition-colors ${
-                    isDarkMode ? 'text-zinc-400 group-hover:text-zinc-350' : 'text-stone-600 group-hover:text-stone-800'
+                    Isaac Lopes <span className="font-mono text-xs not-italic ml-2 opacity-50">// Estúdio {getRomanNumeral(currentFloor)}</span>
+                  </span>
+                  <span className={`font-mono text-[10px] tracking-[0.4em] transition-colors uppercase ${
+                    isDarkMode ? 'text-white/40' : 'text-stone-500/50'
                   }`}>
-                    Intimidade esculpida e ligada por luz natural suave. Narrativas humanas reveladas através de olhares em formato médio.
-                  </p>
-                  
-                  <div className={`mt-5 flex items-center justify-center md:justify-end gap-2 transition-colors ${
-                    isDarkMode ? 'text-zinc-400 group-hover:text-white' : 'text-stone-500 group-hover:text-stone-950'
-                  }`}>
-                    <span className="font-mono text-[9px] tracking-widest mr-1 group-hover:mr-3 transition-all">
-                      ABRIR RETRATOS {!isMobile && '[←]'}
-                    </span>
-                    <ArrowLeft className="w-3 h-3" />
-                  </div>
+                    {rightCol ? `${leftCol.title.toUpperCase()} E ${rightCol.title.toUpperCase()}` : `${leftCol.title.toUpperCase()} E CONTACTO`}
+                  </span>
                 </div>
 
-                {/* Corredor Meio: Piso de Prespetiva & Portal */}
+                {/* Central Area: Left / Right Options as a physical corridor */}
                 <div 
-                  className="md:col-span-4 flex flex-col items-center justify-center relative py-4"
-                  style={{
-                    transform: `translateZ(20px)`,
-                    transformStyle: 'preserve-3d'
-                  }}
+                  id={`crossroad-choices-${currentFloor}`}
+                  className="w-full max-w-6xl flex-grow grid grid-cols-1 md:grid-cols-12 gap-8 items-center justify-center my-auto relative z-20 overflow-hidden px-4"
+                  style={{ perspective: '1600px' }}
                 >
-                  {/* Central perspective lines going towards horizon */}
-                  <div className="absolute inset-0 hidden md:flex items-center justify-center pointer-events-none">
-                    <div className={`w-full h-[1px] opacity-25 bg-gradient-to-r from-transparent via-stone-400 to-transparent`} />
-                  </div>
-
+                  {/* Corredor Parede Esquerda: Left Collection */}
                   <div 
-                    onClick={() => navigateTo('encruzilhada-2')}
-                    className="relative cursor-pointer group flex flex-col items-center p-8 rounded-lg transition-all duration-500 w-full max-w-[280px]"
+                    className="md:col-span-4 flex flex-col items-center md:items-end justify-center text-center md:text-right cursor-pointer group p-6 transition-all duration-500 hover:z-30 rounded-lg hover:bg-stone-500/5"
+                    style={{
+                      transform: `rotateY(${24 + mousePosition.x * -0.05}deg) translateZ(-40px)`,
+                      transformStyle: 'preserve-3d'
+                    }}
+                    onClick={() => { navigateTo(leftCol.folderName); setActiveWebIndex(0); }}
                   >
-                    {/* Glowing gate outline representing corridor depth */}
-                    <div className={`absolute inset-0 rounded-lg border transition-all duration-1000 ${
-                      isDarkMode 
-                        ? 'border-white/10 group-hover:border-white/40 shadow-[0_0_15px_rgba(255,255,255,0.03)] group-hover:shadow-[0_0_25px_rgba(255,255,255,0.12)] bg-white/[0.01]' 
-                        : 'border-stone-200 group-hover:border-stone-600 shadow-sm group-hover:shadow-[0_0_20px_rgba(0,0,0,0.05)] bg-black/[0.01]'
-                     }`} />
-
-                    <div className="relative z-10 flex flex-col items-center text-center">
-                      <span className={`text-[8px] tracking-[0.4em] uppercase font-mono mb-2 block ${isDarkMode ? 'text-zinc-500' : 'text-stone-400'}`}>ESTÚDIO II</span>
-                      <h4 className={`font-serif italic text-lg md:text-xl font-light tracking-wide ${isDarkMode ? 'text-[#e0e0e0] group-hover:text-white' : 'text-stone-800 group-hover:text-black font-semibold'}`}>
-                        PAISAGENS &amp; ARQUITETURA
-                      </h4>
-                      
-                      {/* Luminous indicator arrow/dot */}
-                      <div className="my-4 relative w-6 h-6 flex items-center justify-center">
-                        <div className={`absolute w-1.5 h-1.5 rounded-full ${isDarkMode ? 'bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]' : 'bg-stone-900'} group-hover:scale-150 transition-transform duration-500`} />
-                        <div className={`absolute w-4 h-4 rounded-full border border-dashed animate-spin ${isDarkMode ? 'border-white/30' : 'border-stone-900/30'}`} />
-                      </div>
-
-                      <span className={`font-mono text-[8px] tracking-[0.2em] uppercase leading-relaxed ${isDarkMode ? 'text-zinc-650' : 'text-stone-400'}`}>
-                        SEGUIR ADIANTE {!isMobile && '[↑]'}
+                    <span className={`text-[9px] tracking-[0.5em] uppercase mb-3 transition-colors ${
+                      isDarkMode ? 'text-white/30' : 'text-stone-550/40'
+                    }`}>{leftCol.categoryLabel}</span>
+                    
+                    <h3 className={`font-serif italic text-3xl md:text-4xl font-light transition-all tracking-wide ${
+                      isDarkMode ? 'text-white/80 group-hover:text-white' : 'text-stone-800 group-hover:text-black'
+                    }`}>
+                      {leftCol.title.toUpperCase()}
+                    </h3>
+                    
+                    <div className={`w-12 h-[1px] mt-3 mb-4 transition-all self-center md:self-end ${
+                      isDarkMode ? 'bg-white/20 group-hover:bg-white group-hover:w-20' : 'bg-stone-300 group-hover:bg-stone-900 group-hover:w-20'
+                    }`} />
+                    
+                    <p className={`font-mono text-[10px] leading-relaxed tracking-wider max-w-[240px] transition-colors ${
+                      isDarkMode ? 'text-zinc-400 group-hover:text-zinc-350' : 'text-stone-600 group-hover:text-stone-800'
+                    }`}>
+                      {leftCol.description}
+                    </p>
+                    
+                    <div className={`mt-5 flex items-center justify-center md:justify-end gap-2 transition-colors ${
+                      isDarkMode ? 'text-zinc-400 group-hover:text-white' : 'text-stone-500 group-hover:text-stone-950'
+                    }`}>
+                      <span className="font-mono text-[9px] tracking-widest mr-1 group-hover:mr-3 transition-all">
+                        ABRIR {leftCol.title.toUpperCase()} {!isMobile}
                       </span>
+                      <ArrowLeft className="w-3 h-3" />
                     </div>
                   </div>
-                </div>
 
-                {/* Corredor Parede Direita: DESPORTO */}
-                <div 
-                  className="md:col-span-4 flex flex-col items-center md:items-start justify-center text-center md:text-left cursor-pointer group p-6 transition-all duration-500 hover:z-30 rounded-lg hover:bg-stone-500/5"
-                  style={{
-                    transform: `rotateY(${-24 + mousePosition.x * -0.05}deg) translateZ(-40px)`,
-                    transformStyle: 'preserve-3d'
-                  }}
-                  onClick={() => { navigateTo('desporto'); setActiveWebIndex(0); }}
-                >
-                  <span className={`text-[9px] tracking-[0.5em] uppercase mb-3 transition-colors ${
-                    isDarkMode ? 'text-white/30' : 'text-stone-550/40'
-                  }`}>Instantâneos Dinâmicos</span>
-                  
-                  <h3 className={`font-serif italic text-3xl md:text-4xl font-light transition-all tracking-wide ${
-                    isDarkMode ? 'text-white/80 group-hover:text-white' : 'text-stone-800 group-hover:text-black'
-                  }`}>
-                    DESPORTO
-                  </h3>
-                  
-                  <div className={`w-12 h-[1px] mt-3 mb-4 transition-all self-center md:self-start ${
-                    isDarkMode ? 'bg-white/20 group-hover:bg-white group-hover:w-20' : 'bg-stone-300 group-hover:bg-stone-900 group-hover:w-20'
-                  }`} />
-                  
-                  <p className={`font-mono text-[10px] leading-relaxed tracking-wider max-w-[240px] transition-colors ${
-                    isDarkMode ? 'text-zinc-400 group-hover:text-zinc-350' : 'text-stone-600 group-hover:text-stone-800'
-                  }`}>
-                    Aceleração extrema, foco cinético e dinâmicas puras congeladas em frações de segundo a alta velocidade.
-                  </p>
-                  
-                  <div className={`mt-5 flex items-center justify-center md:justify-start gap-2 transition-colors ${
-                    isDarkMode ? 'text-zinc-400 group-hover:text-white' : 'text-stone-500 group-hover:text-stone-950'
-                  }`}>
-                    <ArrowRight className="w-3 h-3" />
-                    <span className="font-mono text-[9px] tracking-widest ml-1 group-hover:ml-3 transition-all">
-                      ABRIR DESPORTO {!isMobile && '[→]'}
-                    </span>
+                  {/* Corredor Meio: Piso de Prespetiva & Portal */}
+                  <div 
+                    className="md:col-span-4 flex flex-col items-center justify-center relative py-4"
+                    style={{
+                      transform: `translateZ(20px)`,
+                      transformStyle: 'preserve-3d'
+                    }}
+                  >
+                    {/* Central perspective lines going towards horizon */}
+                    <div className="absolute inset-0 hidden md:flex items-center justify-center pointer-events-none">
+                      <div className={`w-full h-[1px] opacity-25 bg-gradient-to-r from-transparent via-stone-400 to-transparent`} />
+                    </div>
+
+                    {(!isLastFloor || !isOdd) && (
+                      <div 
+                        onClick={() => navigateTo(isLastFloor ? 'sobre-contacto' : `encruzilhada-${currentFloor + 1}`)}
+                        className="relative cursor-pointer group flex flex-col items-center p-8 rounded-lg transition-all duration-500 w-full max-w-[280px]"
+                      >
+                        {/* Glowing gate outline representing corridor depth */}
+                        <div className={`absolute inset-0 rounded-lg border transition-all duration-1000 ${
+                          isDarkMode 
+                            ? 'border-white/10 group-hover:border-white/40 shadow-[0_0_15px_rgba(255,255,255,0.03)] group-hover:shadow-[0_0_25px_rgba(255,255,255,0.12)] bg-white/[0.01]' 
+                            : 'border-stone-200 group-hover:border-stone-600 shadow-sm group-hover:shadow-[0_0_20px_rgba(0,0,0,0.05)] bg-black/[0.01]'
+                         }`} />
+
+                        <div className="relative z-10 flex flex-col items-center text-center">
+                          <span className={`text-[8px] tracking-[0.4em] uppercase font-mono mb-2 block ${isDarkMode ? 'text-zinc-500' : 'text-stone-400'}`}>
+                            {isLastFloor ? 'SOBRE MIM' : `ESTÚDIO ${getRomanNumeral(currentFloor + 1)}`}
+                          </span>
+                          <h4 className={`font-serif italic text-lg md:text-xl font-light tracking-wide ${isDarkMode ? 'text-[#e0e0e0] group-hover:text-white' : 'text-stone-800 group-hover:text-black font-semibold'}`}>
+                            {isLastFloor 
+                              ? 'NARRATIVA / CONTACTO' 
+                              : collections[2 * currentFloor] ? `${collections[2 * currentFloor].title.toUpperCase()} & ${collections[2 * currentFloor + 1] ? collections[2 * currentFloor + 1].title.toUpperCase() : 'CONTACTO'}` : ''
+                            }
+                          </h4>
+                          
+                          {/* Luminous indicator arrow/dot */}
+                          <div className="my-4 relative w-6 h-6 flex items-center justify-center">
+                            <div className={`absolute w-1.5 h-1.5 rounded-full ${isDarkMode ? 'bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]' : 'bg-stone-900'} group-hover:scale-150 transition-transform duration-500`} />
+                            <div className={`absolute w-4 h-4 rounded-full border border-dashed animate-spin ${isDarkMode ? 'border-white/30' : 'border-stone-900/30'}`} />
+                          </div>
+
+                          <span className={`font-mono text-[8px] tracking-[0.2em] uppercase leading-relaxed ${isDarkMode ? 'text-zinc-650' : 'text-stone-400'}`}>
+                            SEGUIR ADIANTE {!isMobile && '[↑]'}
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </div>
-              </div>
 
-              {/* Bottom Navigation HUD */}
-              <div className="w-full flex flex-col items-center z-10">
-                {/* Navigation Cues from Elegant Dark */}
-                <div className="mt-2 flex flex-col items-center">
-                  <div className="mb-2 flex gap-4">
-                    <div className={`w-8 h-8 rounded-full border flex items-center justify-center text-[10px] cursor-pointer transition-all ${
-                      isDarkMode 
-                        ? 'border-white/10 text-white/40 hover:border-white/40 hover:text-white hover:bg-white/5 bg-black/20' 
-                        : 'border-stone-300 text-stone-600 hover:border-stone-800 hover:text-stone-900 hover:bg-stone-100 bg-white/40'
-                    }`} onClick={() => { navigateTo('retratos'); setActiveWebIndex(0); }}>←</div>
-                    <div className={`w-8 h-8 rounded-full border flex items-center justify-center text-[10px] cursor-pointer transition-all ${
-                      isDarkMode 
-                        ? 'border-white/10 text-white/40 hover:border-white/40 hover:text-white hover:bg-white/5 bg-black/20' 
-                        : 'border-stone-300 text-stone-600 hover:border-stone-800 hover:text-stone-900 hover:bg-stone-100 bg-white/40'
-                    }`} onClick={() => navigateTo('encruzilhada-2')}>↑</div>
-                    <div className={`w-8 h-8 rounded-full border flex items-center justify-center text-[10px] cursor-pointer transition-all ${
-                      isDarkMode 
-                        ? 'border-white/10 text-white/40 hover:border-white/40 hover:text-white hover:bg-white/5 bg-black/20' 
-                        : 'border-stone-300 text-stone-600 hover:border-stone-800 hover:text-stone-900 hover:bg-stone-100 bg-white/40'
-                    }`} onClick={() => { navigateTo('desporto'); setActiveWebIndex(0); }}>→</div>
+                  {/* Corredor Parede Direita: Right Collection OR Contacts (if odd and last floor) */}
+                  {rightCol ? (
+                    <div 
+                      className="md:col-span-4 flex flex-col items-center md:items-start justify-center text-center md:text-left cursor-pointer group p-6 transition-all duration-500 hover:z-30 rounded-lg hover:bg-stone-500/5"
+                      style={{
+                        transform: `rotateY(${-24 + mousePosition.x * -0.05}deg) translateZ(-40px)`,
+                        transformStyle: 'preserve-3d'
+                      }}
+                      onClick={() => { navigateTo(rightCol.folderName); setActiveWebIndex(0); }}
+                    >
+                      <span className={`text-[9px] tracking-[0.5em] uppercase mb-3 transition-colors ${
+                        isDarkMode ? 'text-white/30' : 'text-stone-550/40'
+                      }`}>{rightCol.categoryLabel}</span>
+                      
+                      <h3 className={`font-serif italic text-3xl md:text-4xl font-light transition-all tracking-wide ${
+                        isDarkMode ? 'text-white/80 group-hover:text-white' : 'text-stone-800 group-hover:text-black'
+                      }`}>
+                        {rightCol.title.toUpperCase()}
+                      </h3>
+                      
+                      <div className={`w-12 h-[1px] mt-3 mb-4 transition-all self-center md:self-start ${
+                        isDarkMode ? 'bg-white/20 group-hover:bg-white group-hover:w-20' : 'bg-stone-300 group-hover:bg-stone-900 group-hover:w-20'
+                      }`} />
+                      
+                      <p className={`font-mono text-[10px] leading-relaxed tracking-wider max-w-[240px] transition-colors ${
+                        isDarkMode ? 'text-zinc-400 group-hover:text-zinc-350' : 'text-stone-600 group-hover:text-stone-800'
+                      }`}>
+                        {rightCol.description}
+                      </p>
+                      
+                      <div className={`mt-5 flex items-center justify-center md:justify-start gap-2 transition-colors ${
+                        isDarkMode ? 'text-zinc-400 group-hover:text-white' : 'text-stone-500 group-hover:text-stone-950'
+                      }`}>
+                        <ArrowRight className="w-3 h-3" />
+                        <span className="font-mono text-[9px] tracking-widest ml-1 group-hover:mr-3 transition-all">
+                          ABRIR {rightCol.title.toUpperCase()} {!isMobile}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    /* ODD FLOOR LAYOUT OPTION: Contacts occupying space on right side of last collection! */
+                    <div 
+                      className="md:col-span-4 flex flex-col items-center md:items-start justify-center text-center md:text-left cursor-pointer group p-6 transition-all duration-500 hover:z-30 rounded-lg hover:bg-stone-500/5"
+                      style={{
+                        transform: `rotateY(${-24 + mousePosition.x * -0.05}deg) translateZ(-40px)`,
+                        transformStyle: 'preserve-3d'
+                      }}
+                      onClick={() => { navigateTo('sobre-contacto'); }}
+                    >
+                      <span className={`text-[9px] tracking-[0.5em] uppercase mb-3 transition-colors ${
+                        isDarkMode ? 'text-white/30' : 'text-stone-550/40'
+                      }`}>CONVERSAS &amp; PARCERIAS</span>
+                      
+                      <h3 className={`font-serif italic text-3xl md:text-4xl font-light transition-all tracking-wide ${
+                        isDarkMode ? 'text-white/80 group-hover:text-white' : 'text-stone-800 group-hover:text-black'
+                      }`}>
+                        CONTACTO
+                      </h3>
+                      
+                      <div className={`w-12 h-[1px] mt-3 mb-4 transition-all self-center md:self-start ${
+                        isDarkMode ? 'bg-white/20 group-hover:bg-white group-hover:w-20' : 'bg-stone-300 group-hover:bg-stone-900 group-hover:w-20'
+                      }`} />
+                      
+                      <p className={`font-mono text-[10px] leading-relaxed tracking-wider max-w-[240px] transition-colors ${
+                        isDarkMode ? 'text-zinc-400 group-hover:text-zinc-350' : 'text-stone-600 group-hover:text-stone-800'
+                      }`}>
+                        Inicie uma conversa, proponha um novo projeto criativo ou partilhe as suas reflexões artísticas e críticas.
+                      </p>
+                      
+                      <div className={`mt-5 flex items-center justify-center md:justify-start gap-2 transition-colors ${
+                        isDarkMode ? 'text-zinc-400 group-hover:text-white' : 'text-stone-500 group-hover:text-stone-950'
+                      }`}>
+                        <ArrowRight className="w-3 h-3" />
+                        <span className="font-mono text-[9px] tracking-widest ml-1 group-hover:mr-3 transition-all">
+                          ABRIR CONTACTOS {!isMobile}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Perspective Guide & controls */}
+                <div className="w-full flex flex-col items-center gap-2 relative z-20">
+                  <div className="flex gap-4 mb-2">
+                    <button 
+                      onClick={() => { navigateTo(leftCol.folderName); setActiveWebIndex(0); }}
+                      className={`font-mono text-[10px] p-2 hover:font-bold border rounded-full transition-all cursor-pointer ${
+                        isDarkMode ? 'border-white/10 text-zinc-400 hover:text-white bg-white/5' : 'border-stone-200 text-stone-600 hover:text-stone-900 bg-black/5'
+                      }`}
+                    >
+                      [←] {leftCol.title.toUpperCase()}
+                    </button>
+                    {(!isLastFloor || !isOdd) && (
+                      <button 
+                        onClick={() => navigateTo(isLastFloor ? 'sobre-contacto' : `encruzilhada-${currentFloor + 1}`)}
+                        className={`font-mono text-[10px] p-2 hover:font-bold border rounded-full transition-all cursor-pointer ${
+                          isDarkMode ? 'border-white/10 text-zinc-400 hover:text-white bg-white/5' : 'border-stone-200 text-stone-600 hover:text-stone-900 bg-black/5'
+                        }`}
+                      >
+                        [↑] AVANÇAR
+                      </button>
+                    )}
+                    {rightCol ? (
+                      <button 
+                        onClick={() => { navigateTo(rightCol.folderName); setActiveWebIndex(0); }}
+                        className={`font-mono text-[10px] p-2 hover:font-bold border rounded-full transition-all cursor-pointer ${
+                          isDarkMode ? 'border-white/10 text-zinc-400 hover:text-white bg-white/5' : 'border-stone-200 text-stone-600 hover:text-stone-900 bg-black/5'
+                        }`}
+                      >
+                        [→] {rightCol.title.toUpperCase()}
+                      </button>
+                    ) : (
+                      <button 
+                        onClick={() => navigateTo('sobre-contacto')}
+                        className={`font-mono text-[10px] p-2 hover:font-bold border rounded-full transition-all cursor-pointer ${
+                          isDarkMode ? 'border-white/10 text-zinc-400 hover:text-white bg-white/5' : 'border-stone-200 text-stone-600 hover:text-stone-900 bg-black/5'
+                        }`}
+                      >
+                        [→] CONTACTO
+                      </button>
+                    )}
                   </div>
                   {!isMobile && (
-                    <p className={`text-[10px] tracking-[0.25em] uppercase font-mono transition-colors ${
+                    <p className={`font-mono text-[8px] tracking-widest ${
                       isDarkMode ? 'text-white/25' : 'text-stone-900/40'
-                    }`}>Teclado [←] Esquerda // [→] Direita // [↑] Avançar</p>
+                    }`}>Teclado [←] Esquerda // [→] Direita {(!isLastFloor || !isOdd) && '// [↑] Avançar'}</p>
                   )}
                 </div>
 
                 <div className={`w-full flex justify-between items-center font-mono text-[9px] tracking-[0.25em] border-t pt-4 mt-4 transition-colors ${
                   isDarkMode ? 'border-white/10 text-zinc-500' : 'border-stone-200 text-stone-400'
                 }`}>
-                  <span>{isMobile ? 'VOLTAR AO INÍCIO' : 'ESC / [↓] VOLTAR AO INÍCIO'}</span>
-                  <span>ESTÚDIO I // PISO PRINCIPAL</span>
+                  <span onClick={() => navigateTo(currentFloor === 1 ? 'vazio' : `encruzilhada-${currentFloor - 1}`)} className="cursor-pointer hover:font-bold">
+                    {isMobile 
+                      ? (currentFloor === 1 ? 'VOLTAR AO INÍCIO' : `REVERTER PARA O ESTÚDIO ${getRomanNumeral(currentFloor - 1)}`) 
+                      : `ESC / [↓] ${currentFloor === 1 ? 'VOLTAR AO INÍCIO' : `REVERTER PARA O ESTÚDIO ${getRomanNumeral(currentFloor - 1)}`}`
+                    }
+                  </span>
+                  <span>{`ESTÚDIO ${getRomanNumeral(currentFloor)} // ${currentFloor === 1 ? 'PISO PRINCIPAL' : 'PISO SUPERIOR'}`}</span>
                 </div>
-              </div>
-            </motion.div>
-          )}
+              </motion.div>
+            );
+          })()}
 
-          {/* ================= SECTION 2B: ENCRUZILHADA II (PAISAGENS & ARQUITETURA) ================= */}
-          {section === 'encruzilhada-2' && (
-            <motion.div
-              key="encruzilhada-2"
-              className={`absolute inset-0 flex flex-col justify-between items-center p-8 md:p-14 z-10 transition-colors duration-1000 ${
-                isDarkMode ? 'text-zinc-100' : 'text-stone-900'
-              }`}
-              initial={{ opacity: 0, scale: 0.7, filter: 'blur(10px)' }}
-              animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-              exit={{ 
-                opacity: 0,
-                scale: 1.2,
-                filter: 'blur(8px)',
-                transition: { duration: 0.8, ease: 'easeInOut' }
-              }}
-              style={{
-                transform: `rotateY(${mousePosition.x * -0.05}deg) rotateX(${mousePosition.y * 0.05}deg)`,
-              }}
-            >
-              {/* Header Info */}
-              <div className="w-full flex justify-between items-center z-10">
-                <span className={`font-serif italic font-light tracking-wide text-lg md:text-xl transition-colors ${
-                  isDarkMode ? 'text-[#e0e0e0]/80' : 'text-stone-800'
-                }`}>
-                  Isaac Lopes <span className="font-mono text-xs not-italic ml-2 opacity-50">// Estúdio II</span>
-                </span>
-                <span className={`font-mono text-[10px] tracking-[0.4em] transition-colors uppercase ${
-                  isDarkMode ? 'text-white/40' : 'text-stone-500/50'
-                }`}>
-                  PAISAGENS E ARQUITETURA
-                </span>
-              </div>
+          {/* ================= DYNAMIC GALLERY SECTION ================= */}
+          {collections.some(c => c.folderName === section) && (() => {
+            const activeCol = collections.find(c => c.folderName === section)!;
+            const projects = activeCol.projects;
 
-              {/* Central Area: Left / Right Options as a physical corridor */}
-              <div 
-                id="crossroad-choices-2"
-                className="w-full max-w-6xl flex-grow grid grid-cols-1 md:grid-cols-12 gap-8 items-center justify-center my-auto relative z-20 overflow-hidden px-4"
-                style={{ perspective: '1600px' }}
+            return (
+              <motion.div
+                key={activeCol.folderName}
+                className={`absolute inset-0 flex flex-col justify-between p-6 md:p-14 z-10 w-full transition-colors duration-1000 ${
+                  isDarkMode ? 'text-zinc-100' : 'text-stone-900'
+                }`}
+                initial={{ opacity: 0, x: -100, filter: 'blur(8px)' }}
+                animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+                exit={{ 
+                  opacity: 0,
+                  x: -150,
+                  filter: 'blur(10px)',
+                  transition: { duration: 0.8 }
+                }}
               >
-                {/* Corredor Parede Esquerda: PAISAGENS */}
-                <div 
-                  className="md:col-span-4 flex flex-col items-center md:items-end justify-center text-center md:text-right cursor-pointer group p-6 transition-all duration-500 hover:z-30 rounded-lg hover:bg-stone-500/5"
-                  style={{
-                    transform: `rotateY(${24 + mousePosition.x * -0.05}deg) translateZ(-40px)`,
-                    transformStyle: 'preserve-3d'
-                  }}
-                  onClick={() => { navigateTo('paisagens'); setActiveWebIndex(0); }}
-                >
-                  <span className={`text-[9px] tracking-[0.5em] uppercase mb-3 transition-colors ${
-                    isDarkMode ? 'text-white/30' : 'text-stone-550/40'
-                  }`}>Horizontes Contemplativos</span>
-                  
-                  <h3 className={`font-serif italic text-3xl md:text-4xl font-light transition-all tracking-wide ${
-                    isDarkMode ? 'text-white/80 group-hover:text-white' : 'text-stone-800 group-hover:text-black'
-                  }`}>
-                    PAISAGENS
-                  </h3>
-                  
-                  <div className={`w-12 h-[1px] mt-3 mb-4 transition-all self-center md:self-end ${
-                    isDarkMode ? 'bg-white/20 group-hover:bg-white group-hover:w-20' : 'bg-stone-300 group-hover:bg-stone-900 group-hover:w-20'
-                  }`} />
-                  
-                  <p className={`font-mono text-[10px] leading-relaxed tracking-wider max-w-[240px] transition-colors ${
-                    isDarkMode ? 'text-zinc-400 group-hover:text-zinc-350' : 'text-stone-600 group-hover:text-stone-800'
-                  }`}>
-                    Névoas em longa exposição, geometrias da natureza e o silêncio vasto capturado sob perspetivas serenas.
-                  </p>
-                  
-                  <div className={`mt-5 flex items-center justify-center md:justify-end gap-2 transition-colors ${
-                    isDarkMode ? 'text-zinc-400 group-hover:text-white' : 'text-stone-500 group-hover:text-stone-950'
-                  }`}>
-                    <span className="font-mono text-[9px] tracking-widest mr-1 group-hover:mr-3 transition-all">
-                      ABRIR PAISAGENS {!isMobile && '[←]'}
-                    </span>
-                    <ArrowLeft className="w-3 h-3" />
-                  </div>
-                </div>
-
-                {/* Corredor Meio: Piso de Prespetiva & Portal */}
-                <div 
-                  className="md:col-span-4 flex flex-col items-center justify-center relative py-4"
-                  style={{
-                    transform: `translateZ(20px)`,
-                    transformStyle: 'preserve-3d'
-                  }}
-                >
-                  {/* Central perspective lines going towards horizon */}
-                  <div className="absolute inset-0 hidden md:flex items-center justify-center pointer-events-none">
-                    <div className={`w-full h-[1px] opacity-25 bg-gradient-to-r from-transparent via-stone-400 to-transparent`} />
-                  </div>
-
-                  <div 
-                    onClick={() => navigateTo('sobre-contacto')}
-                    className="relative cursor-pointer group flex flex-col items-center p-8 rounded-lg transition-all duration-500 w-full max-w-[280px]"
-                  >
-                    {/* Glowing gate outline representing corridor depth */}
-                    <div className={`absolute inset-0 rounded-lg border transition-all duration-1000 ${
-                      isDarkMode 
-                        ? 'border-white/10 group-hover:border-white/40 shadow-[0_0_15px_rgba(255,255,255,0.03)] group-hover:shadow-[0_0_25px_rgba(255,255,255,0.12)] bg-white/[0.01]' 
-                        : 'border-stone-200 group-hover:border-stone-600 shadow-sm group-hover:shadow-[0_0_20px_rgba(0,0,0,0.05)] bg-black/[0.01]'
-                     }`} />
-
-                    <div className="relative z-10 flex flex-col items-center text-center">
-                      <span className={`text-[8px] tracking-[0.4em] uppercase font-mono mb-2 block ${isDarkMode ? 'text-zinc-500' : 'text-stone-400'}`}>SOBRE MIM</span>
-                      <h4 className={`font-serif italic text-lg md:text-xl font-light tracking-wide ${isDarkMode ? 'text-[#e0e0e0] group-hover:text-white' : 'text-stone-800 group-hover:text-black font-semibold'}`}>
-                        NARRATIVA / CONTACTO
-                      </h4>
-                      
-                      {/* Luminous indicator arrow/dot */}
-                      <div className="my-4 relative w-6 h-6 flex items-center justify-center">
-                        <div className={`absolute w-1.5 h-1.5 rounded-full ${isDarkMode ? 'bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]' : 'bg-stone-900'} group-hover:scale-150 transition-transform duration-500`} />
-                        <div className={`absolute w-4 h-4 rounded-full border border-dashed animate-spin ${isDarkMode ? 'border-white/30' : 'border-stone-900/30'}`} />
-                      </div>
-
-                      <span className={`font-mono text-[8px] tracking-[0.2em] uppercase leading-relaxed ${isDarkMode ? 'text-zinc-650' : 'text-stone-400'}`}>
-                        SEGUIR ADIANTE {!isMobile && '[↑]'}
-                      </span>
+                {/* Gallery Header */}
+                <div className="w-full flex justify-between items-start z-20">
+                  <div className="flex flex-col">
+                    <div className={`flex items-center gap-2 font-mono text-xs tracking-widest ${
+                      isDarkMode ? 'text-zinc-500' : 'text-stone-450'
+                    }`}>
+                      <span className={`cursor-pointer transition-colors ${
+                        isDarkMode ? 'hover:text-zinc-100' : 'hover:text-stone-950 hover:font-bold'
+                      }`} onClick={() => navigateTo(activeCol.studioKey)}>ISAAC LOPES</span>
+                      <span>/</span>
+                      <span className={`cursor-pointer transition-colors ${
+                        isDarkMode ? 'hover:text-zinc-100' : 'hover:text-stone-950 hover:font-bold'
+                      }`} onClick={() => navigateTo(activeCol.studioKey)}>{activeCol.studio}</span>
+                      <span>/</span>
+                      <span className={isDarkMode ? 'text-zinc-300' : 'text-stone-700 font-bold'}>{activeCol.title.toUpperCase()}</span>
                     </div>
+                    <h3 className={`font-serif italic text-2xl md:text-3xl font-light mt-1.5 transition-colors ${
+                      isDarkMode ? 'text-white' : 'text-stone-900 font-bold'
+                    }`}>{activeCol.displayTitle}</h3>
                   </div>
+                  
+                  <button 
+                    id={`close-${activeCol.folderName}-btn`}
+                    onClick={() => navigateTo(activeCol.studioKey)}
+                    className={`flex items-center gap-2 border p-2 md:px-4 md:py-2 rounded-full font-mono text-[10px] tracking-widest transition-all cursor-pointer ${
+                      isDarkMode 
+                        ? 'border-white/10 hover:border-white/40 text-zinc-400 hover:text-white' 
+                        : 'border-stone-300 hover:border-stone-800 text-stone-500 hover:text-stone-900 bg-white/40'
+                    }`}
+                  >
+                    <X className="w-4 h-4" /> 
+                    <span className="hidden sm:inline">VOLTAR [↓]</span>
+                  </button>
                 </div>
 
-                {/* Corredor Parede Direita: ARQUITETURA */}
-                <div 
-                  className="md:col-span-4 flex flex-col items-center md:items-start justify-center text-center md:text-left cursor-pointer group p-6 transition-all duration-500 hover:z-30 rounded-lg hover:bg-stone-500/5"
-                  style={{
-                    transform: `rotateY(${-24 + mousePosition.x * -0.05}deg) translateZ(-40px)`,
-                    transformStyle: 'preserve-3d'
-                  }}
-                  onClick={() => { navigateTo('arquitetura'); setActiveWebIndex(0); }}
-                >
-                  <span className={`text-[9px] tracking-[0.5em] uppercase mb-3 transition-colors ${
-                    isDarkMode ? 'text-white/30' : 'text-stone-550/40'
-                  }`}>Brutalismo e Espaço</span>
+                {/* Centered Gallery Layout */}
+                <div className="relative w-full max-w-3xl mx-auto flex-1 flex flex-col items-center justify-center gap-6 z-10 px-4 md:px-0 my-4">
                   
-                  <h3 className={`font-serif italic text-3xl md:text-4xl font-light transition-all tracking-wide ${
-                    isDarkMode ? 'text-white/80 group-hover:text-white' : 'text-stone-800 group-hover:text-black'
-                  }`}>
-                    ARQUITETURA
-                  </h3>
-                  
-                  <div className={`w-12 h-[1px] mt-3 mb-4 transition-all self-center md:self-start ${
-                    isDarkMode ? 'bg-white/20 group-hover:bg-white group-hover:w-20' : 'bg-stone-300 group-hover:bg-stone-900 group-hover:w-20'
-                  }`} />
-                  
-                  <p className={`font-mono text-[10px] leading-relaxed tracking-wider max-w-[240px] transition-colors ${
-                    isDarkMode ? 'text-zinc-400 group-hover:text-zinc-350' : 'text-stone-600 group-hover:text-stone-800'
-                  }`}>
-                    A solidez das formas de betão, o jogo rigoroso de sombras e reflexos nas estruturas urbanas contemporâneas.
-                  </p>
-                  
-                  <div className={`mt-5 flex items-center justify-center md:justify-start gap-2 transition-colors ${
-                    isDarkMode ? 'text-zinc-400 group-hover:text-white' : 'text-stone-500 group-hover:text-stone-950'
-                  }`}>
-                    <ArrowRight className="w-3 h-3" />
-                    <span className="font-mono text-[9px] tracking-widest ml-1 group-hover:ml-3 transition-all">
-                      ABRIR ARQUITETURA {!isMobile && '[→]'}
+                  {/* CENTERED: Perspective and Selected card slider */}
+                  <div className="w-full relative min-h-[330px] sm:min-h-[430px] lg:min-h-[510px] flex items-center justify-center">
+                    <div className={`absolute inset-0 pointer-events-none ${
+                      isDarkMode ? 'bg-radial-gradient from-zinc-000/50 to-transparent' : 'bg-radial-gradient from-stone-200/40 to-transparent'
+                    }`} />
+                    
+                    {projects.map((proj, idx) => {
+                      const offset = idx - activeWebIndex;
+                      const isSelected = offset === 0;
+                      
+                      if (Math.abs(offset) > 2) return null;
+
+                      return (
+                        <motion.div
+                          key={proj.id}
+                          className={`absolute w-[240px] sm:w-[320px] md:w-[380px] rounded overflow-hidden shadow-3xl border transition-colors ${
+                            isDarkMode 
+                              ? 'bg-[#101010]/95 border-white/10' 
+                              : 'bg-white border-stone-200 shadow-md'
+                          }`}
+                          style={{
+                            zIndex: 10 - Math.abs(offset),
+                          }}
+                          initial={false}
+                          animate={{
+                            scale: isSelected ? 1 : 0.82 - Math.abs(offset) * 0.08,
+                            x: offset * 180 + (mousePosition.x * (isSelected ? 0.3 : 0.1)),
+                            y: isSelected ? (mousePosition.y * 0.3) : Math.abs(offset) * 15,
+                            rotateY: offset * -28 + (mousePosition.x * (isSelected ? -0.1 : -0.05)),
+                            opacity: isSelected ? 1 : 0.5 - Math.abs(offset) * 0.18,
+                            filter: isSelected ? 'blur(0px)' : 'blur(2px)',
+                          }}
+                          transition={{
+                            type: 'spring',
+                            stiffness: 140,
+                            damping: 18,
+                          }}
+                        >
+                          {/* Aspect block holding portrait picture */}
+                          <div className="aspect-[4/5] relative overflow-hidden bg-[#030303] group">
+                            <img 
+                              src={proj.image} 
+                              alt={proj.title}
+                              className="w-full h-full object-cover select-none pointer-events-none"
+                              referrerPolicy="no-referrer"
+                            />
+                            <div 
+                              className="absolute inset-0 bg-transparent cursor-pointer" 
+                              onClick={() => setSelectedPhoto(proj)}
+                            />
+                            
+                            {/* Fine art details on hover */}
+                            <div className="absolute top-4 left-4 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                              {proj.tags.map((tg, i) => (
+                                <span key={i} className="font-mono text-[8px] tracking-widest bg-black/8 w-fit px-2 py-0.5 rounded text-white border border-white/10 dark:bg-black/80">{tg}</span>
+                              ))}
+                            </div>
+
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 pointer-events-none">
+                              <span className={`font-mono text-xs tracking-widest border px-4 py-2 rounded ${
+                                isDarkMode 
+                                  ? 'bg-black/85 border-white/10 text-white' 
+                                  : 'bg-white/95 border-stone-300 text-stone-900 shadow-md'
+                              }`}>
+                                AMPLIAR DETALHES
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Brief descriptive label at bottom of card */}
+                          <div className="p-4 select-none">
+                            <div className="flex justify-between items-center">
+                              <span className={`font-mono text-[9px] ${isDarkMode ? 'text-zinc-500' : 'text-stone-450'}`}>
+                                {activeCol.title.toUpperCase()} ANALÓGICOS &copy; {proj.year}
+                              </span>
+                              <span className={`font-mono text-[9px] font-bold ${isDarkMode ? 'text-zinc-400' : 'text-stone-800'}`}>
+                                0{idx + 1}
+                              </span>
+                            </div>
+                            <h4 className={`font-serif italic text-base mt-1 ${isDarkMode ? 'text-white' : 'text-stone-900 font-bold'}`}>{proj.title}</h4>
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Centered Controls under the image stack */}
+                  <div className="flex items-center gap-4 mt-8 z-20">
+                    <button 
+                      onClick={() => setActiveWebIndex(prev => (prev === 0 ? projects.length - 1 : prev - 1))}
+                      className={`w-10 h-10 flex items-center justify-center rounded-full border transition-all cursor-pointer ${
+                        isDarkMode 
+                          ? 'border-white/10 hover:border-white/40 hover:bg-white/5 text-zinc-400 hover:text-white' 
+                          : 'border-stone-300 hover:border-stone-850 hover:bg-stone-100 text-stone-500 hover:text-stone-900 bg-white/40'
+                      }`}
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+
+                    <span className={`font-mono text-xs tracking-widest ${isDarkMode ? 'text-zinc-400' : 'text-stone-600'}`}>
+                      {activeWebIndex + 1} / {projects.length}
                     </span>
+
+                    <button 
+                      onClick={() => setActiveWebIndex(prev => (prev === projects.length - 1 ? 0 : prev + 1))}
+                      className={`w-10 h-10 flex items-center justify-center rounded-full border transition-all cursor-pointer ${
+                        isDarkMode 
+                          ? 'border-white/10 hover:border-white/40 hover:bg-white/5 text-zinc-400 hover:text-white' 
+                          : 'border-stone-350 hover:border-stone-850 hover:bg-stone-100 text-stone-700 hover:text-stone-950 bg-white/40'
+                      }`}
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
-              </div>
 
-              {/* Bottom Navigation HUD */}
-              <div className="w-full flex flex-col items-center z-10">
-                {/* Navigation Cues from Elegant Dark */}
-                <div className="mt-2 flex flex-col items-center">
-                  <div className="mb-2 flex gap-4">
-                    <div className={`w-8 h-8 rounded-full border flex items-center justify-center text-[10px] cursor-pointer transition-all ${
-                      isDarkMode 
-                        ? 'border-white/10 text-white/40 hover:border-white/40 hover:text-white hover:bg-white/5 bg-black/20' 
-                        : 'border-stone-300 text-stone-600 hover:border-stone-800 hover:text-stone-900 hover:bg-stone-100 bg-white/40'
-                    }`} onClick={() => { navigateTo('paisagens'); setActiveWebIndex(0); }}>←</div>
-                    <div className={`w-8 h-8 rounded-full border flex items-center justify-center text-[10px] cursor-pointer transition-all ${
-                      isDarkMode 
-                        ? 'border-white/10 text-white/40 hover:border-white/4 hover:text-white hover:bg-white/5 bg-black/20' 
-                        : 'border-stone-300 text-stone-600 hover:border-stone-800 hover:text-stone-900 hover:bg-stone-100 bg-white/40'
-                    }`} onClick={() => navigateTo('sobre-contacto')}>↑</div>
-                    <div className={`w-8 h-8 rounded-full border flex items-center justify-center text-[10px] cursor-pointer transition-all ${
-                      isDarkMode 
-                        ? 'border-white/10 text-white/40 hover:border-white/40 hover:text-white hover:bg-white/5 bg-black/20' 
-                        : 'border-stone-300 text-stone-600 hover:border-stone-800 hover:text-stone-700 hover:bg-stone-100 bg-white/40'
-                    }`} onClick={() => { navigateTo('arquitetura'); setActiveWebIndex(0); }}>→</div>
-                  </div>
-                  {!isMobile && (
-                    <p className={`text-[10px] tracking-[0.25em] uppercase font-mono transition-colors ${
-                      isDarkMode ? 'text-white/25' : 'text-stone-900/40'
-                    }`}>Teclado [←] Esquerda // [→] Direita // [↑] Avançar</p>
-                  )}
-                </div>
-
-                <div className={`w-full flex justify-between items-center font-mono text-[9px] tracking-[0.25em] border-t pt-4 mt-4 transition-colors ${
+                {/* Bottom Nav indicators */}
+                <div className={`w-full flex justify-between items-center font-mono text-[9px] tracking-widest border-t pt-6 transition-colors ${
                   isDarkMode ? 'border-white/10 text-zinc-500' : 'border-stone-200 text-stone-400'
                 }`}>
-                  <span>{isMobile ? 'REVERTER PARA O ESTÚDIO I' : 'ESC / [↓] REVERTER PARA O ESTÚDIO I'}</span>
-                  <span>ESTÚDIO II // PISO SUPERIOR</span>
+                  <span>{isMobile ? 'CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO' : '[←] ANTERIOR // [→] SEGUINTE // CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO'}</span>
+                  <span className={`cursor-pointer transition-colors ${
+                    isDarkMode ? 'hover:text-white' : 'hover:text-stone-900 hover:font-bold'
+                  }`} onClick={() => navigateTo(activeCol.studioKey)}>VOLTAR PARA {activeCol.studio}</span>
                 </div>
-              </div>
-            </motion.div>
-          )}
-
-          {/* ================= SECTION 3: RETRATOS (GALERIA ANALÓGICA) ================= */}
-          {section === 'retratos' && (
-            <motion.div
-              key="retratos"
-              className={`absolute inset-0 flex flex-col justify-between p-6 md:p-14 z-10 w-full transition-colors duration-1000 ${
-                isDarkMode ? 'text-zinc-100' : 'text-stone-900'
-              }`}
-              initial={{ opacity: 0, x: -100, filter: 'blur(8px)' }}
-              animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
-              exit={{ 
-                opacity: 0,
-                x: -150,
-                filter: 'blur(10px)',
-                transition: { duration: 0.8 }
-              }}
-            >
-              {/* Gallery Header */}
-              <div className="w-full flex justify-between items-start z-20">
-                <div className="flex flex-col">
-                  <div className={`flex items-center gap-2 font-mono text-xs tracking-widest ${
-                    isDarkMode ? 'text-zinc-500' : 'text-stone-400'
-                  }`}>
-                    <span className={`cursor-pointer transition-colors ${
-                      isDarkMode ? 'hover:text-zinc-100' : 'hover:text-stone-950 hover:font-bold'
-                    }`} onClick={() => navigateTo('encruzilhada-1')}>ISAAC LOPES</span>
-                    <span>/</span>
-                    <span className={`cursor-pointer transition-colors ${
-                      isDarkMode ? 'hover:text-zinc-100' : 'hover:text-stone-950 hover:font-bold'
-                    }`} onClick={() => navigateTo('encruzilhada-1')}>ESTÚDIO I</span>
-                    <span>/</span>
-                    <span className={isDarkMode ? 'text-zinc-300' : 'text-stone-700 font-bold'}>RETRATOS</span>
-                  </div>
-                  <h3 className={`font-serif italic text-2xl md:text-3xl font-light mt-1.5 transition-colors ${
-                    isDarkMode ? 'text-white' : 'text-stone-900 font-bold'
-                  }`}>Retratos Analógicos</h3>
-                </div>
-                
-                <button 
-                  id="close-retratos-btn"
-                  onClick={() => navigateTo('encruzilhada-1')}
-                  className={`flex items-center gap-2 border p-2 md:px-4 md:py-2 rounded-full font-mono text-[10px] tracking-widest transition-all cursor-pointer ${
-                    isDarkMode 
-                      ? 'border-white/10 hover:border-white/40 text-zinc-400 hover:text-white' 
-                      : 'border-stone-300 hover:border-stone-800 text-stone-500 hover:text-stone-900 bg-white/40'
-                  }`}
-                >
-                  <X className="w-4 h-4" /> 
-                  <span className="hidden sm:inline">VOLTAR [↓]</span>
-                </button>
-              </div>
-
-              {/* Centered Gallery Layout */}
-              <div className="relative w-full max-w-3xl mx-auto flex-1 flex flex-col items-center justify-center gap-6 z-10 px-4 md:px-0 my-4">
-                
-                {/* CENTERED: Perspective and Selected card slider */}
-                <div className="w-full relative min-h-[330px] sm:min-h-[430px] lg:min-h-[510px] flex items-center justify-center">
-                  <div className={`absolute inset-0 pointer-events-none ${
-                    isDarkMode ? 'bg-radial-gradient from-zinc-000/50 to-transparent' : 'bg-radial-gradient from-stone-200/40 to-transparent'
-                  }`} />
-                  
-                   {retratoProjects.map((proj, idx) => {
-                    const offset = idx - activeWebIndex;
-                    const isPassed = offset < 0;
-                    const isUpcoming = offset > 0;
-                    const isSelected = offset === 0;
-                    
-                    if (Math.abs(offset) > 2) return null;
-
-                    return (
-                      <motion.div
-                        key={proj.id}
-                        className={`absolute w-[240px] sm:w-[320px] md:w-[380px] rounded overflow-hidden shadow-3xl border transition-colors ${
-                          isDarkMode 
-                            ? 'bg-[#101010]/95 border-white/10' 
-                            : 'bg-white border-stone-200 shadow-md'
-                        }`}
-                        style={{
-                          zIndex: 10 - Math.abs(offset),
-                        }}
-                        initial={false}
-                        animate={{
-                          scale: isSelected ? 1 : 0.82 - Math.abs(offset) * 0.08,
-                          x: offset * 180 + (mousePosition.x * (isSelected ? 0.3 : 0.1)),
-                          y: isSelected ? (mousePosition.y * 0.3) : Math.abs(offset) * 15,
-                          rotateY: offset * -28 + (mousePosition.x * (isSelected ? -0.1 : -0.05)),
-                          opacity: isSelected ? 1 : 0.5 - Math.abs(offset) * 0.18,
-                          filter: isSelected ? 'blur(0px)' : 'blur(2px)',
-                        }}
-                        transition={{
-                          type: 'spring',
-                          stiffness: 140,
-                          damping: 18,
-                        }}
-                      >
-                        {/* Aspect block holding portrait picture */}
-                        <div className="aspect-[4/5] relative overflow-hidden bg-[#030303] group">
-                          <img 
-                            src={proj.image} 
-                            alt={proj.title}
-                            className="w-full h-full object-cover select-none pointer-events-none"
-                            referrerPolicy="no-referrer"
-                          />
-                          <div 
-                            className="absolute inset-0 bg-transparent cursor-pointer" 
-                            onClick={() => setSelectedPhoto(proj)}
-                          />
-                          
-                          {/* Fine art details on hover */}
-                          <div className="absolute top-4 left-4 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            {proj.tags.map((tg, i) => (
-                              <span key={i} className="font-mono text-[8px] tracking-widest bg-black/8 w-fit px-2 py-0.5 rounded text-white border border-white/10 dark:bg-black/80">{tg}</span>
-                            ))}
-                          </div>
-
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 pointer-events-none">
-                            <span className={`font-mono text-xs tracking-widest border px-4 py-2 rounded ${
-                              isDarkMode 
-                                ? 'bg-black/85 border-white/10 text-white' 
-                                : 'bg-white/95 border-stone-300 text-stone-900 shadow-md'
-                            }`}>
-                              AMPLIAR DETALHES
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Brief descriptive label at bottom of card */}
-                        <div className="p-4 select-none">
-                          <div className="flex justify-between items-center">
-                            <span className={`font-mono text-[9px] ${isDarkMode ? 'text-zinc-500' : 'text-stone-400'}`}>
-                              RETRATOS ANALÓGICOS &copy; {proj.year}
-                            </span>
-                            <span className={`font-mono text-[9px] font-bold ${isDarkMode ? 'text-zinc-400' : 'text-stone-800'}`}>
-                              0{idx + 1}
-                            </span>
-                          </div>
-                          <h4 className={`font-serif italic text-base mt-1 ${isDarkMode ? 'text-white' : 'text-stone-900 font-bold'}`}>{proj.title}</h4>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-
-                {/* Centered Controls under the image stack */}
-                <div className="flex items-center gap-4 mt-8 z-20">
-                  <button 
-                    onClick={() => setActiveWebIndex(prev => (prev === 0 ? retratoProjects.length - 1 : prev - 1))}
-                    className={`w-10 h-10 flex items-center justify-center rounded-full border transition-all cursor-pointer ${
-                      isDarkMode 
-                        ? 'border-white/10 hover:border-white/40 hover:bg-white/5 text-zinc-400 hover:text-white' 
-                        : 'border-stone-300 hover:border-stone-800 hover:bg-stone-100 text-stone-500 hover:text-stone-900 bg-white/40'
-                    }`}
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-
-                  <span className={`font-mono text-xs tracking-widest ${isDarkMode ? 'text-zinc-400' : 'text-stone-600'}`}>
-                    {activeWebIndex + 1} / {retratoProjects.length}
-                  </span>
-
-                  <button 
-                    onClick={() => setActiveWebIndex(prev => (prev === retratoProjects.length - 1 ? 0 : prev + 1))}
-                    className={`w-10 h-10 flex items-center justify-center rounded-full border transition-all cursor-pointer ${
-                      isDarkMode 
-                        ? 'border-white/10 hover:border-white/40 hover:bg-white/5 text-zinc-400 hover:text-white' 
-                        : 'border-stone-300 hover:border-stone-800 hover:bg-stone-100 text-stone-500 hover:text-stone-900 bg-white/40'
-                    }`}
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Bottom Nav indicators */}
-              <div className={`w-full flex justify-between items-center font-mono text-[9px] tracking-widest border-t pt-6 transition-colors ${
-                isDarkMode ? 'border-white/10 text-zinc-500' : 'border-stone-200 text-stone-400'
-              }`}>
-                <span>{isMobile ? 'CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO' : '[←] ANTERIOR // [→] SEGUINTE // CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO'}</span>
-                <span className={`cursor-pointer transition-colors ${
-                  isDarkMode ? 'hover:text-white' : 'hover:text-stone-900 hover:font-bold'
-                }`} onClick={() => navigateTo('encruzilhada-1')}>VOLTAR PARA ESTÚDIO I</span>
-              </div>
-            </motion.div>
-          )}
-
-          {/* ================= SECTION 3B: PAISAGENS (GALERIA CONTEMPLATIVA) ================= */}
-          {section === 'paisagens' && (
-            <motion.div
-              key="paisagens"
-              className={`absolute inset-0 flex flex-col justify-between p-6 md:p-14 z-10 w-full transition-colors duration-1000 ${
-                isDarkMode ? 'text-zinc-100' : 'text-stone-900'
-              }`}
-              initial={{ opacity: 0, x: -100, filter: 'blur(8px)' }}
-              animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
-              exit={{ 
-                opacity: 0,
-                x: -150,
-                filter: 'blur(10px)',
-                transition: { duration: 0.8 }
-              }}
-            >
-              {/* Gallery Header */}
-              <div className="w-full flex justify-between items-start z-20">
-                <div className="flex flex-col">
-                  <div className={`flex items-center gap-2 font-mono text-xs tracking-widest ${
-                    isDarkMode ? 'text-zinc-500' : 'text-stone-400'
-                  }`}>
-                    <span className={`cursor-pointer transition-colors ${
-                      isDarkMode ? 'hover:text-zinc-100' : 'hover:text-stone-950 hover:font-bold'
-                    }`} onClick={() => navigateTo('encruzilhada-2')}>ISAAC LOPES</span>
-                    <span>/</span>
-                    <span className={`cursor-pointer transition-colors ${
-                      isDarkMode ? 'hover:text-zinc-100' : 'hover:text-stone-950 hover:font-bold'
-                    }`} onClick={() => navigateTo('encruzilhada-2')}>ESTÚDIO II</span>
-                    <span>/</span>
-                    <span className={isDarkMode ? 'text-zinc-300' : 'text-stone-700 font-bold'}>PAISAGENS</span>
-                  </div>
-                  <h3 className={`font-serif italic text-2xl md:text-3xl font-light mt-1.5 transition-colors ${
-                    isDarkMode ? 'text-white' : 'text-stone-900 font-bold'
-                  }`}>Paisagens Silenciosas</h3>
-                </div>
-                
-                <button 
-                  id="close-paisagens-btn"
-                  onClick={() => navigateTo('encruzilhada-2')}
-                  className={`flex items-center gap-2 border p-2 md:px-4 md:py-2 rounded-full font-mono text-[10px] tracking-widest transition-all cursor-pointer ${
-                    isDarkMode 
-                      ? 'border-white/10 hover:border-white/40 text-zinc-400 hover:text-white' 
-                      : 'border-stone-300 hover:border-stone-800 text-stone-500 hover:text-stone-900 bg-white/40'
-                  }`}
-                >
-                  <X className="w-4 h-4" /> 
-                  <span className="hidden sm:inline">VOLTAR [↓]</span>
-                </button>
-              </div>
-
-              {/* Centered Gallery Layout */}
-              <div className="relative w-full max-w-3xl mx-auto flex-1 flex flex-col items-center justify-center gap-6 z-10 px-4 md:px-0 my-4">
-                
-                {/* CENTERED: Perspective and Selected card slider */}
-                <div className="w-full relative min-h-[330px] sm:min-h-[430px] lg:min-h-[510px] flex items-center justify-center">
-                  <div className={`absolute inset-0 pointer-events-none ${
-                    isDarkMode ? 'bg-radial-gradient from-zinc-000/50 to-transparent' : 'bg-radial-gradient from-stone-200/40 to-transparent'
-                  }`} />
-                  
-                  {/* Stacked background card effect */}
-                  {paisagemProjects.map((proj, idx) => {
-                    const offset = idx - activeWebIndex;
-                    const isPassed = offset < 0;
-                    const isUpcoming = offset > 0;
-                    const isSelected = offset === 0;
-                    
-                    if (Math.abs(offset) > 2) return null;
-
-                    return (
-                      <motion.div
-                        key={proj.id}
-                        className={`absolute w-[240px] sm:w-[320px] md:w-[380px] rounded overflow-hidden shadow-3xl border transition-colors ${
-                          isDarkMode 
-                            ? 'bg-[#101010]/95 border-white/10' 
-                            : 'bg-white border-stone-200 shadow-md'
-                        }`}
-                        style={{
-                          zIndex: 10 - Math.abs(offset),
-                        }}
-                        initial={false}
-                        animate={{
-                          scale: isSelected ? 1 : 0.82 - Math.abs(offset) * 0.08,
-                          x: offset * 180 + (mousePosition.x * (isSelected ? 0.3 : 0.1)),
-                          y: isSelected ? (mousePosition.y * 0.3) : Math.abs(offset) * 15,
-                          rotateY: offset * -28 + (mousePosition.x * (isSelected ? -0.1 : -0.05)),
-                          opacity: isSelected ? 1 : 0.5 - Math.abs(offset) * 0.18,
-                          filter: isSelected ? 'blur(0px)' : 'blur(2px)',
-                        }}
-                        transition={{
-                          type: 'spring',
-                          stiffness: 140,
-                          damping: 18,
-                        }}
-                      >
-                        {/* Aspect block holding landscapes */}
-                        <div className="aspect-[4/5] relative overflow-hidden bg-[#030303] group">
-                          <img 
-                            src={proj.image} 
-                            alt={proj.title}
-                            className="w-full h-full object-cover select-none pointer-events-none"
-                            referrerPolicy="no-referrer"
-                          />
-                          <div 
-                            className="absolute inset-0 bg-transparent cursor-pointer" 
-                            onClick={() => setSelectedPhoto(proj)}
-                          />
-                          
-                          {/* Fine art details on hover */}
-                          <div className="absolute top-4 left-4 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            {proj.tags.map((tg, i) => (
-                              <span key={i} className="font-mono text-[8px] tracking-widest bg-black/8 w-fit px-2 py-0.5 rounded text-white border border-white/10 dark:bg-black/80">{tg}</span>
-                            ))}
-                          </div>
-
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 pointer-events-none">
-                            <span className={`font-mono text-xs tracking-widest border px-4 py-2 rounded ${
-                              isDarkMode 
-                                ? 'bg-black/85 border-white/10 text-white' 
-                                : 'bg-white/95 border-stone-300 text-stone-900 shadow-md'
-                            }`}>
-                              AMPLIAR DETALHES
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Brief descriptive label at bottom of card */}
-                        <div className="p-4 select-none">
-                          <div className="flex justify-between items-center">
-                            <span className={`font-mono text-[9px] ${isDarkMode ? 'text-zinc-500' : 'text-stone-400'}`}>
-                              HORIZONTES EXPANSIVOS &copy; {proj.year}
-                            </span>
-                            <span className={`font-mono text-[9px] font-bold ${isDarkMode ? 'text-zinc-400' : 'text-stone-800'}`}>
-                              0{idx + 1}
-                            </span>
-                          </div>
-                          <h4 className={`font-serif italic text-base mt-1 ${isDarkMode ? 'text-white' : 'text-stone-900 font-bold'}`}>{proj.title}</h4>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-
-                {/* Centered Controls under the image stack */}
-                <div className="flex items-center gap-4 mt-8 z-20">
-                  <button 
-                    onClick={() => setActiveWebIndex(prev => (prev === 0 ? paisagemProjects.length - 1 : prev - 1))}
-                    className={`w-10 h-10 flex items-center justify-center rounded-full border transition-all cursor-pointer ${
-                      isDarkMode 
-                        ? 'border-white/10 hover:border-white/40 hover:bg-white/5 text-zinc-400 hover:text-white' 
-                        : 'border-stone-300 hover:border-stone-800 hover:bg-stone-100 text-stone-500 hover:text-stone-900 bg-white/40'
-                    }`}
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-
-                  <span className={`font-mono text-xs tracking-widest ${isDarkMode ? 'text-zinc-400' : 'text-stone-600'}`}>
-                    {activeWebIndex + 1} / {paisagemProjects.length}
-                  </span>
-
-                  <button 
-                    onClick={() => setActiveWebIndex(prev => (prev === paisagemProjects.length - 1 ? 0 : prev + 1))}
-                    className={`w-10 h-10 flex items-center justify-center rounded-full border transition-all cursor-pointer ${
-                      isDarkMode 
-                        ? 'border-white/10 hover:border-white/40 hover:bg-white/5 text-zinc-400 hover:text-white' 
-                        : 'border-stone-300 hover:border-stone-800 hover:bg-stone-100 text-stone-500 hover:text-stone-900 bg-white/40'
-                    }`}
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Bottom Nav indicators */}
-              <div className={`w-full flex justify-between items-center font-mono text-[9px] tracking-widest border-t pt-6 transition-colors ${
-                isDarkMode ? 'border-white/10 text-zinc-500' : 'border-stone-200 text-stone-400'
-              }`}>
-                <span>{isMobile ? 'CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO' : '[←] ANTERIOR // [→] SEGUINTE // CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO'}</span>
-                <span className={`cursor-pointer transition-colors ${
-                  isDarkMode ? 'hover:text-white' : 'hover:text-stone-900 hover:font-bold'
-                }`} onClick={() => navigateTo('encruzilhada-2')}>VOLTAR PARA ESTÚDIO II</span>
-              </div>
-            </motion.div>
-          )}
-
-          {/* ================= SECTION 4: DESPORTO (GALERIA DINÂMICA) ================= */}
-          {section === 'desporto' && (
-            <motion.div
-              key="desporto"
-              className={`absolute inset-0 flex flex-col justify-between p-6 md:p-14 z-10 w-full transition-colors duration-1000 ${
-                isDarkMode ? 'text-zinc-100' : 'text-stone-900'
-              }`}
-              initial={{ opacity: 0, x: 100, filter: 'blur(8px)' }}
-              animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
-              exit={{ 
-                opacity: 0,
-                x: 150,
-                filter: 'blur(10px)',
-                transition: { duration: 0.8 }
-              }}
-            >
-              {/* Gallery Header */}
-              <div className="w-full flex justify-between items-start z-20">
-                <div className="flex flex-col">
-                  <div className={`flex items-center gap-2 font-mono text-xs tracking-widest ${
-                    isDarkMode ? 'text-zinc-500' : 'text-stone-400'
-                  }`}>
-                    <span className={`cursor-pointer transition-colors ${
-                      isDarkMode ? 'hover:text-zinc-100' : 'hover:text-stone-950 hover:font-bold'
-                    }`} onClick={() => navigateTo('encruzilhada-1')}>ISAAC LOPES</span>
-                    <span>/</span>
-                    <span className={`cursor-pointer transition-colors ${
-                      isDarkMode ? 'hover:text-zinc-100' : 'hover:text-stone-950 hover:font-bold'
-                    }`} onClick={() => navigateTo('encruzilhada-1')}>ESTÚDIO I</span>
-                    <span>/</span>
-                    <span className={isDarkMode ? 'text-zinc-300' : 'text-stone-700 font-bold'}>DESPORTO</span>
-                  </div>
-                  <h3 className={`font-serif italic text-2xl md:text-3xl font-light mt-1.5 transition-colors ${
-                    isDarkMode ? 'text-white' : 'text-stone-900 font-bold'
-                  }`}>Movimento Suspenso</h3>
-                </div>
-                
-                <button 
-                  id="close-desporto-btn"
-                  onClick={() => navigateTo('encruzilhada-1')}
-                  className={`flex items-center gap-2 border p-2 md:px-4 md:py-2 rounded-full font-mono text-[10px] tracking-widest transition-all cursor-pointer ${
-                    isDarkMode 
-                      ? 'border-white/10 hover:border-white/40 text-zinc-400 hover:text-white' 
-                      : 'border-stone-300 hover:border-stone-800 text-stone-500 hover:text-stone-900 bg-white/40'
-                  }`}
-                >
-                  <X className="w-4 h-4" /> 
-                  <span className="hidden sm:inline">VOLTAR [↓]</span>
-                </button>
-              </div>
-
-              {/* Centered Gallery Layout */}
-              <div className="relative w-full max-w-3xl mx-auto flex-1 flex flex-col items-center justify-center gap-6 z-10 px-4 md:px-0 my-4">
-                
-                {/* CENTERED: Perspective and Selected card slider */}
-                <div className="w-full relative min-h-[330px] sm:min-h-[430px] lg:min-h-[510px] flex items-center justify-center">
-                  <div className={`absolute inset-0 pointer-events-none ${
-                    isDarkMode ? 'bg-radial-gradient from-zinc-000/50 to-transparent' : 'bg-radial-gradient from-stone-200/40 to-transparent'
-                  }`} />
-                  
-                  {/* Stacked background card effect */}
-                  {desportoProjects.map((proj, idx) => {
-                    const offset = idx - activeWebIndex;
-                    const isPassed = offset < 0;
-                    const isUpcoming = offset > 0;
-                    const isSelected = offset === 0;
-                    
-                    if (Math.abs(offset) > 2) return null;
-
-                    return (
-                      <motion.div
-                        key={proj.id}
-                        className={`absolute w-[240px] sm:w-[320px] md:w-[380px] rounded overflow-hidden shadow-3xl border transition-colors ${
-                          isDarkMode 
-                            ? 'bg-[#101010]/95 border-white/10' 
-                            : 'bg-white border-stone-200 shadow-md'
-                        }`}
-                        style={{
-                          zIndex: 10 - Math.abs(offset),
-                        }}
-                        initial={false}
-                        animate={{
-                          scale: isSelected ? 1 : 0.82 - Math.abs(offset) * 0.08,
-                          x: offset * 180 + (mousePosition.x * (isSelected ? 0.3 : 0.1)),
-                          y: isSelected ? (mousePosition.y * 0.3) : Math.abs(offset) * 15,
-                          rotateY: offset * -28 + (mousePosition.x * (isSelected ? -0.1 : -0.05)),
-                          opacity: isSelected ? 1 : 0.5 - Math.abs(offset) * 0.18,
-                          filter: isSelected ? 'blur(0px)' : 'blur(2px)',
-                        }}
-                        transition={{
-                          type: 'spring',
-                          stiffness: 140,
-                          damping: 18,
-                        }}
-                      >
-                        {/* Aspect block holding sport picture */}
-                        <div className="aspect-[4/5] relative overflow-hidden bg-[#030303] group">
-                          <img 
-                            src={proj.image} 
-                            alt={proj.title}
-                            className="w-full h-full object-cover select-none pointer-events-none"
-                            referrerPolicy="no-referrer"
-                          />
-                          <div 
-                            className="absolute inset-0 bg-transparent cursor-pointer" 
-                            onClick={() => setSelectedPhoto(proj)}
-                          />
-                          
-                          {/* Fine art details on hover */}
-                          <div className="absolute top-4 left-4 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            {proj.tags.map((tg, i) => (
-                              <span key={i} className="font-mono text-[8px] tracking-widest bg-black/8 w-fit px-2 py-0.5 rounded text-white border border-white/10 dark:bg-black/80">{tg}</span>
-                            ))}
-                          </div>
-
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 pointer-events-none">
-                            <span className={`font-mono text-xs tracking-widest border px-4 py-2 rounded ${
-                              isDarkMode 
-                                ? 'bg-black/85 border-white/10 text-white' 
-                                : 'bg-white/95 border-stone-300 text-stone-900 shadow-md'
-                            }`}>
-                              AMPLIAR DETALHES
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Brief descriptive label at bottom of card */}
-                        <div className="p-4 select-none">
-                          <div className="flex justify-between items-center">
-                            <span className={`font-mono text-[9px] ${isDarkMode ? 'text-zinc-500' : 'text-stone-400'}`}>
-                              DINÂMICA EXTREMA &copy; {proj.year}
-                            </span>
-                            <span className={`font-mono text-[9px] font-bold ${isDarkMode ? 'text-zinc-400' : 'text-stone-800'}`}>
-                              0{idx + 1}
-                            </span>
-                          </div>
-                          <h4 className={`font-serif italic text-base mt-1 ${isDarkMode ? 'text-white' : 'text-stone-900 font-bold'}`}>{proj.title}</h4>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-
-                {/* Centered Controls under the image stack */}
-                <div className="flex items-center gap-4 mt-8 z-20">
-                  <button 
-                    onClick={() => setActiveWebIndex(prev => (prev === 0 ? desportoProjects.length - 1 : prev - 1))}
-                    className={`w-10 h-10 flex items-center justify-center rounded-full border transition-all cursor-pointer ${
-                      isDarkMode 
-                        ? 'border-white/10 hover:border-white/40 hover:bg-white/5 text-zinc-400 hover:text-white' 
-                        : 'border-stone-300 hover:border-stone-800 hover:bg-stone-100 text-stone-500 hover:text-stone-900 bg-white/40'
-                    }`}
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-
-                  <span className={`font-mono text-xs tracking-widest ${isDarkMode ? 'text-zinc-400' : 'text-stone-600'}`}>
-                    {activeWebIndex + 1} / {desportoProjects.length}
-                  </span>
-
-                  <button 
-                    onClick={() => setActiveWebIndex(prev => (prev === desportoProjects.length - 1 ? 0 : prev + 1))}
-                    className={`w-10 h-10 flex items-center justify-center rounded-full border transition-all cursor-pointer ${
-                      isDarkMode 
-                        ? 'border-white/10 hover:border-white/40 hover:bg-white/5 text-zinc-400 hover:text-white' 
-                        : 'border-stone-300 hover:border-stone-800 hover:bg-stone-100 text-stone-500 hover:text-stone-900 bg-white/40'
-                    }`}
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Bottom Nav indicators */}
-              <div className={`w-full flex justify-between items-center font-mono text-[9px] tracking-widest border-t pt-6 transition-colors ${
-                isDarkMode ? 'border-white/10 text-zinc-500' : 'border-stone-200 text-stone-400'
-              }`}>
-                <span>{isMobile ? 'CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO' : '[←] ANTERIOR // [→] SEGUINTE // CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO'}</span>
-                <span className={`cursor-pointer transition-colors ${
-                  isDarkMode ? 'hover:text-white' : 'hover:text-stone-900 hover:font-bold'
-                }`} onClick={() => navigateTo('encruzilhada-1')}>VOLTAR PARA ESTÚDIO I</span>
-              </div>
-            </motion.div>
-          )}
-
-          {/* ================= SECTION 4B: ARQUITETURA (GALERIA DINÂMICA) ================= */}
-          {section === 'arquitetura' && (
-            <motion.div
-              key="arquitetura"
-              className={`absolute inset-0 flex flex-col justify-between p-6 md:p-14 z-10 w-full transition-colors duration-1000 ${
-                isDarkMode ? 'text-zinc-100' : 'text-stone-900'
-              }`}
-              initial={{ opacity: 0, x: 100, filter: 'blur(8px)' }}
-              animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
-              exit={{ 
-                opacity: 0,
-                x: 150,
-                filter: 'blur(10px)',
-                transition: { duration: 0.8 }
-              }}
-            >
-              {/* Gallery Header */}
-              <div className="w-full flex justify-between items-start z-20">
-                <div className="flex flex-col">
-                  <div className={`flex items-center gap-2 font-mono text-xs tracking-widest ${
-                    isDarkMode ? 'text-zinc-500' : 'text-stone-400'
-                  }`}>
-                    <span className={`cursor-pointer transition-colors ${
-                      isDarkMode ? 'hover:text-zinc-100' : 'hover:text-stone-950 hover:font-bold'
-                    }`} onClick={() => navigateTo('encruzilhada-2')}>ISAAC LOPES</span>
-                    <span>/</span>
-                    <span className={`cursor-pointer transition-colors ${
-                      isDarkMode ? 'hover:text-zinc-100' : 'hover:text-stone-950 hover:font-bold'
-                    }`} onClick={() => navigateTo('encruzilhada-2')}>ESTÚDIO II</span>
-                    <span>/</span>
-                    <span className={isDarkMode ? 'text-zinc-300' : 'text-stone-700 font-bold'}>ARQUITETURA</span>
-                  </div>
-                  <h3 className={`font-serif italic text-2xl md:text-3xl font-light mt-1.5 transition-colors ${
-                    isDarkMode ? 'text-white' : 'text-stone-900 font-bold'
-                  }`}>Geometria & Linha</h3>
-                </div>
-                
-                <button 
-                  id="close-arquitetura-btn"
-                  onClick={() => navigateTo('encruzilhada-2')}
-                  className={`flex items-center gap-2 border p-2 md:px-4 md:py-2 rounded-full font-mono text-[10px] tracking-widest transition-all cursor-pointer ${
-                    isDarkMode 
-                      ? 'border-white/10 hover:border-white/40 text-zinc-400 hover:text-white' 
-                      : 'border-stone-300 hover:border-stone-800 text-stone-500 hover:text-stone-900 bg-white/40'
-                  }`}
-                >
-                  <X className="w-4 h-4" /> 
-                  <span className="hidden sm:inline">VOLTAR [↓]</span>
-                </button>
-              </div>
-
-              {/* Centered Gallery Layout */}
-              <div className="relative w-full max-w-3xl mx-auto flex-1 flex flex-col items-center justify-center gap-6 z-10 px-4 md:px-0 my-4">
-                
-                {/* CENTERED: Perspective and Selected card slider */}
-                <div className="w-full relative min-h-[330px] sm:min-h-[430px] lg:min-h-[510px] flex items-center justify-center">
-                  <div className={`absolute inset-0 pointer-events-none ${
-                    isDarkMode ? 'bg-radial-gradient from-zinc-000/50 to-transparent' : 'bg-radial-gradient from-stone-200/40 to-transparent'
-                  }`} />
-                  
-                  {/* Stacked background card effect */}
-                  {arquiteturaProjects.map((proj, idx) => {
-                    const offset = idx - activeWebIndex;
-                    const isPassed = offset < 0;
-                    const isUpcoming = offset > 0;
-                    const isSelected = offset === 0;
-                    
-                    if (Math.abs(offset) > 2) return null;
-
-                    return (
-                      <motion.div
-                        key={proj.id}
-                        className={`absolute w-[240px] sm:w-[320px] md:w-[380px] rounded overflow-hidden shadow-3xl border transition-colors ${
-                          isDarkMode 
-                            ? 'bg-[#101010]/95 border-white/10' 
-                            : 'bg-white border-stone-200 shadow-md'
-                        }`}
-                        style={{
-                          zIndex: 10 - Math.abs(offset),
-                        }}
-                        initial={false}
-                        animate={{
-                          scale: isSelected ? 1 : 0.82 - Math.abs(offset) * 0.08,
-                          x: offset * 180 + (mousePosition.x * (isSelected ? 0.3 : 0.1)),
-                          y: isSelected ? (mousePosition.y * 0.3) : Math.abs(offset) * 15,
-                          rotateY: offset * -28 + (mousePosition.x * (isSelected ? -0.1 : -0.05)),
-                          opacity: isSelected ? 1 : 0.5 - Math.abs(offset) * 0.18,
-                          filter: isSelected ? 'blur(0px)' : 'blur(2px)',
-                        }}
-                        transition={{
-                          type: 'spring',
-                          stiffness: 140,
-                          damping: 18,
-                        }}
-                      >
-                        {/* Aspect block holding architecture picture */}
-                        <div className="aspect-[4/5] relative overflow-hidden bg-[#030303] group">
-                          <img 
-                            src={proj.image} 
-                            alt={proj.title}
-                            className="w-full h-full object-cover select-none pointer-events-none"
-                            referrerPolicy="no-referrer"
-                          />
-                          <div 
-                            className="absolute inset-0 bg-transparent cursor-pointer" 
-                            onClick={() => setSelectedPhoto(proj)}
-                          />
-                          
-                          {/* Fine art details on hover */}
-                          <div className="absolute top-4 left-4 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            {proj.tags.map((tg, i) => (
-                              <span key={i} className="font-mono text-[8px] tracking-widest bg-black/8 w-fit px-2 py-0.5 rounded text-white border border-white/10 dark:bg-black/80">{tg}</span>
-                            ))}
-                          </div>
-
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 pointer-events-none">
-                            <span className={`font-mono text-xs tracking-widest border px-4 py-2 rounded ${
-                              isDarkMode 
-                                ? 'bg-black/85 border-white/10 text-white' 
-                                : 'bg-white/95 border-stone-300 text-stone-900 shadow-md'
-                            }`}>
-                              AMPLIAR DETALHES
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Brief descriptive label at bottom of card */}
-                        <div className="p-4 select-none">
-                          <div className="flex justify-between items-center">
-                            <span className={`font-mono text-[9px] ${isDarkMode ? 'text-zinc-500' : 'text-stone-400'}`}>
-                              ESTRUTURA PURA &copy; {proj.year}
-                            </span>
-                            <span className={`font-mono text-[9px] font-bold ${isDarkMode ? 'text-zinc-400' : 'text-stone-800'}`}>
-                              0{idx + 1}
-                            </span>
-                          </div>
-                          <h4 className={`font-serif italic text-base mt-1 ${isDarkMode ? 'text-white' : 'text-stone-900 font-bold'}`}>{proj.title}</h4>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-
-                {/* Centered Controls under the image stack */}
-                <div className="flex items-center gap-4 mt-8 z-20">
-                  <button 
-                    onClick={() => setActiveWebIndex(prev => (prev === 0 ? arquiteturaProjects.length - 1 : prev - 1))}
-                    className={`w-10 h-10 flex items-center justify-center rounded-full border transition-all cursor-pointer ${
-                      isDarkMode 
-                        ? 'border-white/10 hover:border-white/40 hover:bg-white/5 text-zinc-400 hover:text-white' 
-                        : 'border-stone-300 hover:border-stone-800 hover:bg-stone-100 text-stone-500 hover:text-stone-900 bg-white/40'
-                    }`}
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-
-                  <span className={`font-mono text-xs tracking-widest ${isDarkMode ? 'text-zinc-400' : 'text-stone-600'}`}>
-                    {activeWebIndex + 1} / {arquiteturaProjects.length}
-                  </span>
-
-                  <button 
-                    onClick={() => setActiveWebIndex(prev => (prev === arquiteturaProjects.length - 1 ? 0 : prev + 1))}
-                    className={`w-10 h-10 flex items-center justify-center rounded-full border transition-all cursor-pointer ${
-                      isDarkMode 
-                        ? 'border-white/10 hover:border-white/40 hover:bg-white/5 text-zinc-400 hover:text-white' 
-                        : 'border-stone-300 hover:border-stone-800 hover:bg-stone-100 text-stone-500 hover:text-stone-900 bg-white/40'
-                    }`}
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Bottom Nav indicators */}
-              <div className={`w-full flex justify-between items-center font-mono text-[9px] tracking-widest border-t pt-6 transition-colors ${
-                isDarkMode ? 'border-white/10 text-zinc-500' : 'border-stone-200 text-stone-400'
-              }`}>
-                <span>{isMobile ? 'CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO' : '[←] ANTERIOR // [→] SEGUINTE // CLIQUE NA IMAGEM PARA REVELAR EM ECRÃ INTEIRO'}</span>
-                <span className={`cursor-pointer transition-colors ${
-                  isDarkMode ? 'hover:text-white' : 'hover:text-stone-900 hover:font-bold'
-                }`} onClick={() => navigateTo('encruzilhada-2')}>VOLTAR PARA ESTÚDIO II</span>
-              </div>
-            </motion.div>
-          )}
+              </motion.div>
+            );
+          })()}
 
           {/* Immersive Lightbox Modal */}
           <AnimatePresence>
@@ -1973,40 +1263,20 @@ export default function App() {
                 let index = '';
                 let total = 0;
                 
-                const rIdx = retratoProjects.findIndex(p => p.id === selectedPhoto.id);
-                if (rIdx !== -1) {
-                  name = 'RETRATOS';
-                  index = `#${rIdx + 1}`;
-                  total = retratoProjects.length;
-                  return { name, index, total };
-                }
-                
-                const pIdx = paisagemProjects.findIndex(p => p.id === selectedPhoto.id);
-                if (pIdx !== -1) {
-                  name = 'PAISAGENS';
+                // Find matching collection dynamically
+                const matchedCol = collections.find(c => c.projects.some(p => p.id === selectedPhoto.id));
+                if (matchedCol) {
+                  const pIdx = matchedCol.projects.findIndex(p => p.id === selectedPhoto.id);
+                  name = matchedCol.title.toUpperCase();
                   index = `#${pIdx + 1}`;
-                  total = paisagemProjects.length;
-                  return { name, index, total };
-                }
-                
-                const dIdx = desportoProjects.findIndex(p => p.id === selectedPhoto.id);
-                if (dIdx !== -1) {
-                  name = 'DESPORTO';
-                  index = `#${dIdx + 1}`;
-                  total = desportoProjects.length;
-                  return { name, index, total };
-                }
-                
-                const aIdx = arquiteturaProjects.findIndex(p => p.id === selectedPhoto.id);
-                if (aIdx !== -1) {
-                  name = 'ARQUITETURA';
-                  index = `#${aIdx + 1}`;
-                  total = arquiteturaProjects.length;
-                  return { name, index, total };
+                  total = matchedCol.projects.length;
                 }
                 
                 return { name, index, total };
               })();
+
+              const activeCol = collections.find(c => c.projects.some(p => p.id === selectedPhoto.id));
+              const activeList = activeCol ? activeCol.projects : [];
 
               return (
                 <motion.div
@@ -2073,10 +1343,6 @@ export default function App() {
                     }`}>
                       <button 
                         onClick={() => {
-                          const activeList = retratoProjects.some(p => p.id === selectedPhoto.id) ? retratoProjects : 
-                                             paisagemProjects.some(p => p.id === selectedPhoto.id) ? paisagemProjects :
-                                             desportoProjects.some(p => p.id === selectedPhoto.id) ? desportoProjects :
-                                             arquiteturaProjects;
                           const idx = activeList.findIndex(p => p.id === selectedPhoto.id);
                           const prevIdx = idx === 0 ? activeList.length - 1 : idx - 1;
                           setSelectedPhoto(activeList[prevIdx]);
@@ -2097,10 +1363,6 @@ export default function App() {
 
                       <button 
                         onClick={() => {
-                          const activeList = retratoProjects.some(p => p.id === selectedPhoto.id) ? retratoProjects : 
-                                             paisagemProjects.some(p => p.id === selectedPhoto.id) ? paisagemProjects :
-                                             desportoProjects.some(p => p.id === selectedPhoto.id) ? desportoProjects :
-                                             arquiteturaProjects;
                           const idx = activeList.findIndex(p => p.id === selectedPhoto.id);
                           const nextIdx = idx === activeList.length - 1 ? 0 : idx + 1;
                           setSelectedPhoto(activeList[nextIdx]);
