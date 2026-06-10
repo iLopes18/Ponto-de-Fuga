@@ -104,18 +104,33 @@ export default function App() {
   // Multi-layered visual stars/particles
   type Particle = { id: number; x: number; y: number; speed: number; size: number };
   const [particles, setParticles] = useState<Particle[]>([]);
+  const [vazioBrightness, setVazioBrightness] = useState<number>(1.0);
 
-  // Generate unique spatial particles once on mount
+  // Generate unique spatial particles once on mount - increased to 110 stars for amazing celestial feel
   useEffect(() => {
-    const list: Particle[] = Array.from({ length: 40 }).map((_, i) => ({
+    const list: Particle[] = Array.from({ length: 110 }).map((_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
       speed: 0.1 + Math.random() * 0.4,
-      size: 1 + Math.random() * 3,
+      size: 0.8 + Math.random() * 2.8,
     }));
     setParticles(list);
   }, []);
+
+  // Multiplier increases star brightness over time while staying on entry/front page ('vazio')
+  useEffect(() => {
+    if (section !== 'vazio') {
+      setVazioBrightness(1.0);
+      return;
+    }
+    
+    const interval = setInterval(() => {
+      setVazioBrightness(prev => Math.min(prev + 0.04, 3.8));
+    }, 120);
+    
+    return () => clearInterval(interval);
+  }, [section]);
 
   // Mobile responsive detection state
   const [isMobile, setIsMobile] = useState<boolean>(false);
@@ -390,11 +405,14 @@ export default function App() {
           // Accelerate or drift differently depending on camera transition speed
           const speedFactor = isTransitioning ? 25 : 1;
           const scaleFactor = isTransitioning ? 3 : 1;
+          const isVazio = section === 'vazio';
           return (
             <motion.div
               key={p.id}
               className={`absolute rounded-full pointer-events-none transition-all duration-1000 ${
-                section === 'vazio' ? 'bg-stone-400/30' : 'bg-white/40 shadow-[0_0_8px_rgba(255,255,255,0.3)]'
+                isVazio
+                  ? (isDarkMode ? 'bg-white shadow-[0_0_12px_rgba(255,255,255,0.95)]' : 'bg-stone-850/40 shadow-[0_0_10px_rgba(120,113,108,0.5)]')
+                  : 'bg-white/45 shadow-[0_0_8px_rgba(255,255,255,0.3)]'
               }`}
               style={{
                 left: `${p.x}%`,
@@ -405,7 +423,9 @@ export default function App() {
               animate={{
                 y: [0, p.speed * -120 * speedFactor, 0],
                 x: [0, p.speed * 40 * (mousePosition.x / 15), 0],
-                opacity: [0.1, 0.6, 0.1],
+                opacity: isVazio 
+                  ? [0.15 * vazioBrightness, Math.min(0.98, 0.65 * vazioBrightness), 0.15 * vazioBrightness]
+                  : [0.1, 0.6, 0.1],
               }}
               transition={{
                 duration: 10 + p.speed * 15,
