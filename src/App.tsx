@@ -1502,7 +1502,7 @@ export default function App() {
                     <p className={`font-sans font-light text-sm leading-relaxed mt-3 ${
                       isDarkMode ? 'text-zinc-300' : 'text-stone-700'
                     }`}>
-                      O Ponto de Fuga é um arquivo pessoal de observações. Reúno aqui fotografias, projetos e experiências que moldaram a forma como vejo o mundo.
+                      O Ponto de Fuga é um arquivo pessoal de observações. Aqui reúno fotografias, projetos e experiências que marcaram a forma como vejo o mundo.
                     </p>
 
                     <p className={`font-sans font-light text-sm leading-relaxed mt-3 ${
