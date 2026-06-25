@@ -1207,7 +1207,7 @@ export default function App() {
                           </div>
 
                           {/* Brief descriptive label at bottom of card */}
-                          <div className="pt-0 pb-4 px-4 flex-none select-none w-0 min-w-full">
+                          <div className="pt-2 pb-4 px-4 flex-none select-none w-0 min-w-full">
                             <div className="flex justify-between items-center">
                               <span className={`font-mono text-[9px] ${isDarkMode ? 'text-zinc-500' : 'text-stone-450'}`}>
                                 {activeCol.title.toUpperCase()} &copy; {proj.year}
