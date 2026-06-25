@@ -1159,7 +1159,7 @@ export default function App() {
                       return (
                         <motion.div
                           key={proj.id}
-                          className={`absolute w-fit min-w-[220px] max-w-[85vw] h-[48vh] sm:h-[52vh] flex flex-col rounded overflow-hidden shadow-3xl border transition-colors ${
+                          className={`absolute w-fit max-w-[85vw] h-auto flex flex-col rounded overflow-hidden shadow-3xl border transition-colors ${
                             isDarkMode 
                               ? 'bg-[#101010]/95 border-white/10' 
                               : 'bg-white border-stone-200 shadow-md'
@@ -1183,11 +1183,11 @@ export default function App() {
                           }}
                         >
                           {/* Aspect block holding portrait picture */}
-                          <div className="flex-1 min-h-0 relative flex items-center justify-center overflow-hidden group bg-transparent">
+                          <div className="relative overflow-hidden group bg-transparent flex justify-center">
                             <img 
                               src={proj.image} 
                               alt={proj.title}
-                              className="h-full w-auto select-none pointer-events-none block mx-auto"
+                              className="h-[38vh] sm:h-[42vh] w-auto max-w-full object-contain select-none pointer-events-none block"
                               referrerPolicy="no-referrer"
                             />
                             <div 
@@ -1207,7 +1207,7 @@ export default function App() {
                           </div>
 
                           {/* Brief descriptive label at bottom of card */}
-                          <div className="p-4 flex-none select-none">
+                          <div className="p-4 flex-none select-none w-0 min-w-full">
                             <div className="flex justify-between items-center">
                               <span className={`font-mono text-[9px] ${isDarkMode ? 'text-zinc-500' : 'text-stone-450'}`}>
                                 {activeCol.title.toUpperCase()} &copy; {proj.year}
@@ -1299,7 +1299,7 @@ export default function App() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  <div className={`relative w-full max-w-3xl flex flex-col rounded-lg overflow-hidden shadow-3xl border p-6 md:p-8 transition-all ${
+                  <div className={`relative w-fit max-w-[90vw] flex flex-col rounded-lg overflow-hidden shadow-3xl border p-0 transition-all ${
                     isDarkMode 
                       ? 'bg-[#080808]/95 border-white/10 text-[#e0e0e0]' 
                       : 'bg-white border-stone-200 text-stone-900'
@@ -1316,20 +1316,20 @@ export default function App() {
                     >
                       <X className="w-5 h-5" />
                     </button>
-
+ 
                     {/* Centered Image Wrapper */}
-                    <div className="w-full flex flex-col items-center justify-center">
-                      <div className="relative max-h-[65vh] w-full flex items-center justify-center">
+                    <div className="w-fit flex flex-col items-center justify-center mx-auto">
+                      <div className="relative h-[45vh] md:h-[55vh] w-fit flex items-center justify-center bg-transparent">
                         <img 
                           src={selectedPhoto.image} 
                           alt={selectedPhoto.title}
-                          className="max-h-[60vh] max-w-full object-contain rounded"
+                          className="h-full w-auto max-w-full object-contain block mx-auto"
                           referrerPolicy="no-referrer"
                         />
                       </div>
 
                       {/* Metadata: Title, Collection, Year and Number */}
-                      <div className="mt-5 text-center w-full max-w-xl">
+                      <div className="pt-6 px-6 md:pt-8 md:px-8 text-center w-0 min-w-full">
                         <h2 className={`font-serif italic text-2xl md:text-3xl font-light tracking-wide ${
                           isDarkMode ? 'text-white' : 'text-stone-900'
                         }`}>
@@ -1349,7 +1349,7 @@ export default function App() {
                     </div>
 
                     {/* Lightbox Horizontal Navigation */}
-                    <div className={`flex justify-between items-center mt-6 pt-5 border-t w-full ${
+                    <div className={`flex justify-between items-center px-6 pb-6 md:px-8 md:pb-8 pt-5 border-t mt-6 w-0 min-w-full ${
                       isDarkMode ? 'border-white/10' : 'border-stone-200'
                     }`}>
                       <button 

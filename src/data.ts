@@ -35,25 +35,25 @@ export const paisagemProjects: Project[] = [
 export const retratoProjects: Project[] = [
   {
     id: 'r1',
-    title: '02:38',
-    image: '/collection_I/be-2.jpg',
-    year: '2026'
-  },
-  {
-    id: 'r2',
-    title: 'Luz de Emergência',
+    title: 'Instante',
     image: '/collection_I/be-1.jpg',
     year: '2026'
   },
   {
+    id: 'r2',
+    title: 'O Erro Certo',
+    image: '/collection_I/be-2.jpg',
+    year: '2026'
+  },
+  {
     id: 'r3',
-    title: 'Instante',
+    title: '02:38',
     image: '/collection_I/be-3.jpg',
     year: '2026'
   },
   {
     id: 'r4',
-    title: 'O Erro Certo',
+    title: 'Luz de Emergência',
     image: '/collection_I/be-4.jpg',
     year: '2026'
   }
