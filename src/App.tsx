@@ -1488,7 +1488,7 @@ export default function App() {
                     <h4 className={`font-serif italic text-2xl font-light tracking-wide mb-4 ${
                       isDarkMode ? 'text-white' : 'text-stone-900 font-bold'
                     }`}>
-                      Estética em Suspenso, Código Concreto.
+                      Registos de uma fuga contínua.
                     </h4>
 
                     <p className={`font-sans font-light text-sm leading-relaxed ${
@@ -1496,13 +1496,25 @@ export default function App() {
                     }`}>
                       Chamo-me <strong className={`font-serif italic tracking-wide transition-colors ${
                         isDarkMode ? 'text-white' : 'text-stone-950 font-bold'
-                      }`}>Isaac Lopes</strong>. Sou designer criativa multidisciplinar, focada no desenvolvimento de narrativas digitais e artes visuais contemplativas.
+                      }`}>Isaac Lopes</strong>.
                     </p>
                     
                     <p className={`font-sans font-light text-sm leading-relaxed mt-3 ${
                       isDarkMode ? 'text-zinc-300' : 'text-stone-700'
                     }`}>
-                      A minha abordagem combina rigor tipográfico com espaços limpos, explorando como a ausência voluntária de elementos pode preencher de significado uma experiência virtual. Do desenho de interfaces ao preto-e-branco analógico, cada projeto é uma busca pelo silêncio essencial.
+                      O Ponto de Fuga é um arquivo pessoal de observações. Reúno aqui fotografias, projetos e experiências que moldaram a forma como vejo o mundo.
+                    </p>
+
+                    <p className={`font-sans font-light text-sm leading-relaxed mt-3 ${
+                      isDarkMode ? 'text-zinc-300' : 'text-stone-700'
+                    }`}>
+                      Cada coleção é uma tentativa de prolongar um instante, compreender uma sensação ou revisitar algo que, de outra forma, passaria despercebido.
+                    </p>
+
+                    <p className={`font-sans font-light text-sm leading-relaxed mt-3 ${
+                      isDarkMode ? 'text-zinc-300' : 'text-stone-700'
+                    }`}>
+                      Um lugar para guardar aquilo que merece um segundo olhar.
                     </p>
 
                     <div className={`mt-6 flex flex-col gap-2 font-mono text-[10px] border-t pt-5 transition-colors ${
@@ -1688,8 +1700,17 @@ export default function App() {
           <button 
             onClick={() => {
               const getBackSection = () => {
-                if (section === 'retratos' || section === 'desporto' || section === 'encruzilhada-2') return 'encruzilhada-1';
-                if (section === 'paisagens' || section === 'arquitetura' || section === 'sobre-contacto') return 'encruzilhada-2';
+                const activeCol = collections.find(c => c.folderName === section);
+                if (activeCol) return activeCol.studioKey;
+                if (section === 'sobre-contacto') {
+                  const numFloors = Math.ceil(collections.length / 2);
+                  return `encruzilhada-${numFloors}`;
+                }
+                if (section.startsWith('encruzilhada-')) {
+                  const floor = parseInt(section.split('-')[1]);
+                  if (floor === 1) return 'vazio';
+                  return `encruzilhada-${floor - 1}`;
+                }
                 return 'vazio';
               };
               navigateTo(getBackSection());
@@ -1714,74 +1735,67 @@ export default function App() {
             AVANÇAR <ArrowUp className="w-3.5 h-3.5" />
           </button>
         )}
-        {section === 'encruzilhada-1' && (
-          <>
-            <button 
-              onClick={() => { navigateTo('retratos'); setActiveWebIndex(0); }}
-              className={`px-3 py-2 rounded-full font-mono text-[9px] tracking-wider transition-colors border ${
-                isDarkMode 
-                  ? 'bg-[#0c0c0c] border-white/10 text-zinc-300' 
-                  : 'bg-stone-55 border-stone-300 text-stone-800 hover:bg-stone-100 shadow-xs'
-              }`}
-            >
-              RETRATOS
-            </button>
-            <button 
-              onClick={() => { navigateTo('desporto'); setActiveWebIndex(0); }}
-              className={`px-3 py-2 rounded-full font-mono text-[9px] tracking-wider transition-colors border ${
-                isDarkMode 
-                  ? 'bg-[#0c0c0c] border-white/10 text-zinc-300' 
-                  : 'bg-stone-55 border-stone-300 text-stone-800 hover:bg-stone-100 shadow-xs'
-              }`}
-            >
-              DESPORTO
-            </button>
-            <button 
-              onClick={() => navigateTo('encruzilhada-2')}
-              className={`px-2.5 py-2.5 rounded-full transition-colors border ${
-                isDarkMode 
-                  ? 'bg-[#0c0c0c] border-white/10 text-zinc-300' 
-                  : 'bg-stone-55 border-stone-300 text-stone-800 hover:bg-stone-100 shadow-xs'
-              }`}
-            >
-              <ArrowUp className="w-3.5 h-3.5" />
-            </button>
-          </>
-        )}
-        {section === 'encruzilhada-2' && (
-          <>
-            <button 
-              onClick={() => { navigateTo('paisagens'); setActiveWebIndex(0); }}
-              className={`px-3 py-2 rounded-full font-mono text-[9px] tracking-wider transition-colors border ${
-                isDarkMode 
-                  ? 'bg-[#0c0c0c] border-white/10 text-zinc-300' 
-                  : 'bg-stone-55 border-stone-300 text-stone-800 hover:bg-stone-100 shadow-xs'
-              }`}
-            >
-              PAISAGENS
-            </button>
-            <button 
-              onClick={() => { navigateTo('arquitetura'); setActiveWebIndex(0); }}
-              className={`px-3 py-2 rounded-full font-mono text-[9px] tracking-wider transition-colors border ${
-                isDarkMode 
-                  ? 'bg-[#0c0c0c] border-white/10 text-zinc-300' 
-                  : 'bg-stone-55 border-stone-300 text-stone-800 hover:bg-stone-100 shadow-xs'
-              }`}
-            >
-              ARQUITETURA
-            </button>
-            <button 
-              onClick={() => navigateTo('sobre-contacto')}
-              className={`px-2.5 py-2.5 rounded-full transition-colors border ${
-                isDarkMode 
-                  ? 'bg-[#0c0c0c] border-white/10 text-zinc-300' 
-                  : 'bg-stone-55 border-stone-300 text-stone-800 hover:bg-stone-100 shadow-xs'
-              }`}
-            >
-              <ArrowUp className="w-3.5 h-3.5" />
-            </button>
-          </>
-        )}
+        {section.startsWith('encruzilhada-') && (() => {
+          const floor = parseInt(section.split('-')[1]);
+          const leftIdx = (floor - 1) * 2;
+          const rightIdx = leftIdx + 1;
+          const leftCol = collections[leftIdx];
+          const rightCol = rightIdx < collections.length ? collections[rightIdx] : null;
+          const isLastFloor = floor === Math.ceil(collections.length / 2);
+          const isOdd = collections.length % 2 !== 0;
+
+          return (
+            <>
+              {leftCol && (
+                <button 
+                  onClick={() => { navigateTo(leftCol.folderName); setActiveWebIndex(0); }}
+                  className={`px-3 py-2 rounded-full font-mono text-[9px] tracking-wider transition-colors border ${
+                    isDarkMode 
+                      ? 'bg-[#0c0c0c] border-white/10 text-zinc-300' 
+                      : 'bg-stone-55 border-stone-300 text-stone-800 hover:bg-stone-100 shadow-xs'
+                  }`}
+                >
+                  {leftCol.title.toUpperCase()}
+                </button>
+              )}
+              {rightCol ? (
+                <button 
+                  onClick={() => { navigateTo(rightCol.folderName); setActiveWebIndex(0); }}
+                  className={`px-3 py-2 rounded-full font-mono text-[9px] tracking-wider transition-colors border ${
+                    isDarkMode 
+                      ? 'bg-[#0c0c0c] border-white/10 text-zinc-300' 
+                      : 'bg-stone-55 border-stone-300 text-stone-800 hover:bg-stone-100 shadow-xs'
+                  }`}
+                >
+                  {rightCol.title.toUpperCase()}
+                </button>
+              ) : isLastFloor && isOdd ? (
+                <button 
+                  onClick={() => navigateTo('sobre-contacto')}
+                  className={`px-3 py-2 rounded-full font-mono text-[9px] tracking-wider transition-colors border ${
+                    isDarkMode 
+                      ? 'bg-[#0c0c0c] border-white/10 text-zinc-300' 
+                      : 'bg-stone-55 border-stone-300 text-stone-800 hover:bg-stone-100 shadow-xs'
+                  }`}
+                >
+                  CONTACTO
+                </button>
+              ) : null}
+              {(!isLastFloor || !isOdd) && (
+                <button 
+                  onClick={() => navigateTo(isLastFloor ? 'sobre-contacto' : `encruzilhada-${floor + 1}`)}
+                  className={`px-2.5 py-2.5 rounded-full transition-colors border ${
+                    isDarkMode 
+                      ? 'bg-[#0c0c0c] border-white/10 text-zinc-300' 
+                      : 'bg-stone-55 border-stone-300 text-stone-800 hover:bg-stone-100 shadow-xs'
+                  }`}
+                >
+                  <ArrowUp className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </>
+          );
+        })()}
       </div>
       )}
 
