@@ -1183,11 +1183,11 @@ export default function App() {
                           }}
                         >
                           {/* Aspect block holding portrait picture */}
-                          <div className="relative overflow-hidden group bg-transparent flex justify-center">
+                          <div className="relative overflow-hidden group bg-transparent flex justify-center h-auto max-h-[38vh] sm:max-h-[42vh] w-fit mx-auto">
                             <img 
                               src={proj.image} 
                               alt={proj.title}
-                              className="h-[38vh] sm:h-[42vh] w-auto max-w-full object-contain select-none pointer-events-none block"
+                              className="max-h-[38vh] sm:max-h-[42vh] h-auto w-auto max-w-full object-contain select-none pointer-events-none block mx-auto"
                               referrerPolicy="no-referrer"
                             />
                             <div 
@@ -1207,7 +1207,7 @@ export default function App() {
                           </div>
 
                           {/* Brief descriptive label at bottom of card */}
-                          <div className="p-4 flex-none select-none w-0 min-w-full">
+                          <div className="pt-0 pb-4 px-4 flex-none select-none w-0 min-w-full">
                             <div className="flex justify-between items-center">
                               <span className={`font-mono text-[9px] ${isDarkMode ? 'text-zinc-500' : 'text-stone-450'}`}>
                                 {activeCol.title.toUpperCase()} &copy; {proj.year}
@@ -1321,17 +1321,17 @@ export default function App() {
  
                     {/* Centered Image Wrapper */}
                     <div className="w-fit flex flex-col items-center justify-center mx-auto">
-                      <div className="relative h-[45vh] md:h-[55vh] w-fit flex items-center justify-center bg-transparent">
+                      <div className="relative h-auto max-h-[45vh] md:max-h-[55vh] w-fit flex items-center justify-center bg-transparent">
                         <img 
                           src={selectedPhoto.image} 
                           alt={selectedPhoto.title}
-                          className="h-full w-auto max-w-full object-contain block mx-auto"
+                          className="max-h-[45vh] md:max-h-[55vh] h-auto w-auto max-w-full object-contain block mx-auto"
                           referrerPolicy="no-referrer"
                         />
                       </div>
 
                       {/* Metadata: Title, Collection, Year and Number */}
-                      <div className="pt-6 px-6 md:pt-8 md:px-8 text-center w-0 min-w-full">
+                      <div className="pt-0 pb-6 px-6 md:pb-8 md:px-8 text-center w-0 min-w-full">
                         {selectedPhoto.title && (
                           <h2 className={`font-serif italic text-2xl md:text-3xl font-light tracking-wide ${
                             isDarkMode ? 'text-white' : 'text-stone-900'
