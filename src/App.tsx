@@ -22,7 +22,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { SpaceSection, Project } from './types';
-import { paisagemProjects, retratoProjects, desportoProjects, arquiteturaProjects } from './data';
+import { paisagemProjects, retratoProjects, apenasEstarProjects, arquiteturaProjects } from './data';
 
 const getRomanNumeral = (num: number) => {
   const map = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
@@ -44,13 +44,13 @@ export const collections = [
   {
     id: 'collection-2',
     folderName: 'col-2',
-    title: 'Desporto',
-    displayTitle: 'Desporto Cinético',
-    categoryLabel: 'Instantâneos Dinâmicos',
+    title: 'Apenas Estar',
+    displayTitle: 'Apenas Estar',
+    categoryLabel: 'Presença Silenciosa',
     studio: 'ESTÚDIO I',
     studioKey: 'encruzilhada-1',
-    description: 'Aceleração extrema, foco cinético e dinâmicas puras congeladas em frações de segundo a alta velocidade.',
-    projects: desportoProjects,
+    description: 'Uma sequência cinematográfica e contemplativa que narra uma história silenciosa de presença, quietude e a simplicidade de apenas estar.',
+    projects: apenasEstarProjects,
   },
   {
     id: 'collection-3',
@@ -1216,7 +1216,9 @@ export default function App() {
                                 0{idx + 1}
                               </span>
                             </div>
-                            <h4 className={`font-serif italic text-base mt-0.5 ${isDarkMode ? 'text-white' : 'text-stone-900 font-bold'}`}>{proj.title}</h4>
+                            {proj.title && (
+                              <h4 className={`font-serif italic text-base mt-0.5 ${isDarkMode ? 'text-white' : 'text-stone-900 font-bold'}`}>{proj.title}</h4>
+                            )}
                           </div>
                         </motion.div>
                       );
@@ -1330,11 +1332,13 @@ export default function App() {
 
                       {/* Metadata: Title, Collection, Year and Number */}
                       <div className="pt-6 px-6 md:pt-8 md:px-8 text-center w-0 min-w-full">
-                        <h2 className={`font-serif italic text-2xl md:text-3xl font-light tracking-wide ${
-                          isDarkMode ? 'text-white' : 'text-stone-900'
-                        }`}>
-                          {selectedPhoto.title}
-                        </h2>
+                        {selectedPhoto.title && (
+                          <h2 className={`font-serif italic text-2xl md:text-3xl font-light tracking-wide ${
+                            isDarkMode ? 'text-white' : 'text-stone-900'
+                          }`}>
+                            {selectedPhoto.title}
+                          </h2>
+                        )}
                         
                         <div className={`mt-3 font-mono text-[10px] tracking-[0.25em] uppercase flex flex-wrap items-center justify-center gap-3 ${
                           isDarkMode ? 'text-zinc-400' : 'text-stone-600'

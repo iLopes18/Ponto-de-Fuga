@@ -59,29 +59,59 @@ export const retratoProjects: Project[] = [
   }
 ];
 
-export const desportoProjects: Project[] = [
+export const apenasEstarProjects: Project[] = [
   {
-    id: 'd1',
-    title: 'Inércia Cortada',
-    image: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?q=80&w=1200&auto=format&fit=crop',
-    year: '2025'
+    id: 'ae1',
+    title: '',
+    image: '/collection_II/1.png',
+    year: '2026'
   },
   {
-    id: 'd2',
-    title: 'Velocidade Suspensa',
-    image: 'https://images.unsplash.com/photo-1483721310020-03333e577078?q=80&w=1200&auto=format&fit=crop',
-    year: '2024'
+    id: 'ae2',
+    title: '',
+    image: '/collection_II/2.png',
+    year: '2026'
   },
   {
-    id: 'd3',
-    title: 'Atleta do Vazio',
-    image: 'https://images.unsplash.com/photo-1522163182402-834f871fd851?q=80&w=1200&auto=format&fit=crop',
-    year: '2025'
+    id: 'ae3',
+    title: '',
+    image: '/collection_II/3.png',
+    year: '2026'
   },
   {
-    id: 'd4',
-    title: 'Salto da Gravidade',
-    image: 'https://images.unsplash.com/photo-1564982743470-472988babdf9?q=80&w=1200&auto=format&fit=crop',
+    id: 'ae4',
+    title: '',
+    image: '/collection_II/4.png',
+    year: '2026'
+  },
+  {
+    id: 'ae5',
+    title: '',
+    image: '/collection_II/5.png',
+    year: '2026'
+  },
+  {
+    id: 'ae6',
+    title: '',
+    image: '/collection_II/6.png',
+    year: '2026'
+  },
+  {
+    id: 'ae7',
+    title: '',
+    image: '/collection_II/7.png',
+    year: '2026'
+  },
+  {
+    id: 'ae8',
+    title: '',
+    image: '/collection_II/8.png',
+    year: '2026'
+  },
+  {
+    id: 'ae9',
+    title: '',
+    image: '/collection_II/9.png',
     year: '2026'
   }
 ];
