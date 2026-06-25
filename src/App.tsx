@@ -938,7 +938,7 @@ export default function App() {
                           </span>
                           <h4 className={`font-serif italic text-lg md:text-xl font-light tracking-wide ${isDarkMode ? 'text-[#e0e0e0] group-hover:text-white' : 'text-stone-800 group-hover:text-black font-semibold'}`}>
                             {isLastFloor 
-                              ? 'NARRATIVA / CONTACTO' 
+                              ? 'CONTACTO' 
                               : collections[2 * currentFloor] ? `${collections[2 * currentFloor].title.toUpperCase()} & ${collections[2 * currentFloor + 1] ? collections[2 * currentFloor + 1].title.toUpperCase() : 'CONTACTO'}` : ''
                             }
                           </h4>
