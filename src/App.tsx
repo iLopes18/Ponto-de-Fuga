@@ -480,7 +480,7 @@ export default function App() {
                 <p className={`font-sans font-light text-xs max-w-sm mx-auto leading-relaxed px-4 ${
                   isDarkMode ? 'text-zinc-400' : 'text-stone-600'
                 }`}>
-                  Procurando o silêncio essencial na relação sutil entre luz, geometria e ausência.
+                  Um lugar para onde o olhar pode fugir
                 </p>
                 <p className={`font-mono text-[8px] tracking-widest mt-6 animate-pulse ${
                   isDarkMode ? 'text-zinc-500' : 'text-stone-400'
