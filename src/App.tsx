@@ -109,14 +109,14 @@ export default function App() {
   const [particles, setParticles] = useState<Particle[]>([]);
   const [vazioBrightness, setVazioBrightness] = useState<number>(1.0);
 
-  // Generate unique spatial particles once on mount - increased to 110 stars for amazing celestial feel
+  // Generate unique spatial particles once on mount - reduced to 35 stars for a cleaner, minimalist aesthetic
   useEffect(() => {
-    const list: Particle[] = Array.from({ length: 110 }).map((_, i) => ({
+    const list: Particle[] = Array.from({ length: 35 }).map((_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
       speed: 0.1 + Math.random() * 0.4,
-      size: 0.8 + Math.random() * 2.8,
+      size: 0.6 + Math.random() * 1.8,
     }));
     setParticles(list);
   }, []);
@@ -571,7 +571,7 @@ export default function App() {
                   <h4 className={`font-serif italic text-lg font-light tracking-wide mb-3 ${
                     isDarkMode ? 'text-white' : 'text-stone-900 font-bold'
                   }`}>
-                    Estética em Suspenso, Código Concreto.
+                    Registos de uma fuga contínua.
                   </h4>
                   <p className={`font-sans font-light text-xs leading-relaxed ${
                     isDarkMode ? 'text-zinc-300' : 'text-stone-700'
@@ -591,7 +591,7 @@ export default function App() {
                   <p className={`font-sans font-light text-xs leading-relaxed mt-2.5 ${
                     isDarkMode ? 'text-zinc-300' : 'text-stone-700'
                   }`}>
-                    Um lugar para guardar aquilo que merece ser visto uma segunda vez.
+                    Um lugar para guardar aquilo que merece um segundo olhar.
                   </p>
                   <div className={`mt-5 flex flex-col gap-1.5 font-mono text-[9px] border-t pt-4 ${
                     isDarkMode ? 'border-white/10 text-zinc-500' : 'border-stone-200 text-stone-450 font-bold'
@@ -655,7 +655,7 @@ export default function App() {
                         <label className={`font-mono text-[8.5px] block tracking-widest mb-1 ${
                           isDarkMode ? 'text-zinc-400' : 'text-stone-500 font-bold'
                         }`}>
-                          NOME DE COPILOTO CLIENTE
+                          NOME
                         </label>
                         <input 
                           type="text"
@@ -792,7 +792,7 @@ export default function App() {
                     isDarkMode ? 'text-zinc-400' : 'text-stone-500'
                   }`}
                 >
-                  Espaço Tipográfico &amp; Portfólio Imersivo
+                  Portfólio Imersivo
                 </p>
                 
                 {/* Beautiful entry CTA */}
