@@ -53,9 +53,9 @@ export const retratoProjects: Project[] = [
   },
   {
     id: 'r4',
-    title: 'Expressão Sombra',
-    image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1200&auto=format&fit=crop',
-    year: '2024'
+    title: 'O Erro Certo',
+    image: '/collection_I/be-4.jpg',
+    year: '2026'
   }
 ];
 

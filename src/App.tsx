@@ -34,7 +34,7 @@ export const collections = [
     id: 'collection-1',
     folderName: 'col-1',
     title: 'Antes do Amanhã',
-    displayTitle: 'Entre Hoje e Amanhã',
+    displayTitle: 'Antes do Amanhã',
     categoryLabel: 'Ponto de Fuga I',
     studio: 'ESTÚDIO I',
     studioKey: 'encruzilhada-1',
@@ -525,13 +525,13 @@ export default function App() {
                       <span className={`font-mono text-[9px] tracking-[0.25em] block mb-1 ${
                         isDarkMode ? 'text-zinc-500' : 'text-stone-450'
                       }`}>
-                        {`SÉRIE ${numRoman} // ${col.title.toUpperCase()}`}
+                        {`SÉRIE ${numRoman}`}
                       </span>
                       
                       <h3 className={`font-serif italic text-xl font-light tracking-wide transition-colors ${
                         isDarkMode ? 'text-white' : 'text-stone-900 font-bold'
                       }`}>
-                        {col.displayTitle}
+                        {col.title}
                       </h3>
                       
                       <p className={`font-sans font-light text-xs leading-relaxed mt-2 ${
@@ -1121,12 +1121,10 @@ export default function App() {
                       <span className={`cursor-pointer transition-colors ${
                         isDarkMode ? 'hover:text-zinc-100' : 'hover:text-stone-950 hover:font-bold'
                       }`} onClick={() => navigateTo(activeCol.studioKey)}>{activeCol.studio}</span>
-                      <span>/</span>
-                      <span className={isDarkMode ? 'text-zinc-300' : 'text-stone-700 font-bold'}>{activeCol.title.toUpperCase()}</span>
                     </div>
                     <h3 className={`font-serif italic text-2xl md:text-3xl font-light mt-1.5 transition-colors ${
                       isDarkMode ? 'text-white' : 'text-stone-900 font-bold'
-                    }`}>{activeCol.displayTitle}</h3>
+                    }`}>{activeCol.title}</h3>
                   </div>
                   
                   <button 
@@ -1147,7 +1145,7 @@ export default function App() {
                 <div className="relative w-full max-w-3xl mx-auto flex-1 flex flex-col items-center justify-center gap-6 z-10 px-4 md:px-0 my-4">
                   
                   {/* CENTERED: Perspective and Selected card slider */}
-                  <div className="w-full relative min-h-[330px] sm:min-h-[430px] lg:min-h-[510px] flex items-center justify-center">
+                  <div className="w-full relative min-h-[300px] h-[48vh] sm:h-[52vh] flex items-center justify-center">
                     <div className={`absolute inset-0 pointer-events-none ${
                       isDarkMode ? 'bg-radial-gradient from-zinc-000/50 to-transparent' : 'bg-radial-gradient from-stone-200/40 to-transparent'
                     }`} />
@@ -1161,7 +1159,7 @@ export default function App() {
                       return (
                         <motion.div
                           key={proj.id}
-                          className={`absolute w-[240px] sm:w-[320px] md:w-[380px] rounded overflow-hidden shadow-3xl border transition-colors ${
+                          className={`absolute w-fit min-w-[220px] max-w-[85vw] h-[48vh] sm:h-[52vh] flex flex-col rounded overflow-hidden shadow-3xl border transition-colors ${
                             isDarkMode 
                               ? 'bg-[#101010]/95 border-white/10' 
                               : 'bg-white border-stone-200 shadow-md'
@@ -1185,13 +1183,11 @@ export default function App() {
                           }}
                         >
                           {/* Aspect block holding portrait picture */}
-                          <div className={`relative overflow-hidden group transition-colors duration-1000 ${
-                            isDarkMode ? 'bg-transparent' : 'bg-transparent'
-                          }`}>
+                          <div className="flex-1 min-h-0 relative flex items-center justify-center overflow-hidden group bg-transparent">
                             <img 
                               src={proj.image} 
                               alt={proj.title}
-                              className="w-full h-auto block select-none pointer-events-none"
+                              className="h-full w-auto select-none pointer-events-none block mx-auto"
                               referrerPolicy="no-referrer"
                             />
                             <div 
@@ -1211,16 +1207,16 @@ export default function App() {
                           </div>
 
                           {/* Brief descriptive label at bottom of card */}
-                          <div className="p-4 select-none">
+                          <div className="p-4 flex-none select-none">
                             <div className="flex justify-between items-center">
                               <span className={`font-mono text-[9px] ${isDarkMode ? 'text-zinc-500' : 'text-stone-450'}`}>
-                                {activeCol.title.toUpperCase()} ANALÓGICOS &copy; {proj.year}
+                                {activeCol.title.toUpperCase()} &copy; {proj.year}
                               </span>
                               <span className={`font-mono text-[9px] font-bold ${isDarkMode ? 'text-zinc-400' : 'text-stone-800'}`}>
                                 0{idx + 1}
                               </span>
                             </div>
-                            <h4 className={`font-serif italic text-base mt-1 ${isDarkMode ? 'text-white' : 'text-stone-900 font-bold'}`}>{proj.title}</h4>
+                            <h4 className={`font-serif italic text-base mt-0.5 ${isDarkMode ? 'text-white' : 'text-stone-900 font-bold'}`}>{proj.title}</h4>
                           </div>
                         </motion.div>
                       );
