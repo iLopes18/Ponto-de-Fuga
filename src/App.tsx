@@ -586,7 +586,7 @@ export default function App() {
                   <p className={`font-sans font-light text-xs leading-relaxed mt-2.5 ${
                     isDarkMode ? 'text-zinc-300' : 'text-stone-700'
                   }`}>
-                    Cada coleção nasce de uma curiosidade diferente: as pessoas que habitam um espaço, a tranquilidade de um passeio sem destino, a presença silenciosa dos animais ou a identidade escondida na arquitetura do quotidiano.
+                    Cada coleção é uma tentativa de prolongar um instante, compreender uma sensação ou revisitar algo que, de outra forma, passaria despercebido.
                   </p>
                   <p className={`font-sans font-light text-xs leading-relaxed mt-2.5 ${
                     isDarkMode ? 'text-zinc-300' : 'text-stone-700'
