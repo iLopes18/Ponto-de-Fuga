@@ -77,7 +77,7 @@ Porque, às vezes, viver é apenas estar.
     description: 'A solidez das formas de betão, o jogo rigoroso de sombras e reflexos nas estruturas urbanas contemporâneas.',
     projects: arquiteturaProjects,
   }
-];
+].filter(col => col.projects && col.projects.length > 0);
 
 const getCollectionDescription = (photo: Project | null) => {
   if (!photo) return '';
@@ -576,12 +576,22 @@ export default function App() {
                   <p className={`font-sans font-light text-xs leading-relaxed ${
                     isDarkMode ? 'text-zinc-300' : 'text-stone-700'
                   }`}>
-                    Chamo-me <strong className={`font-serif italic tracking-wide ${isDarkMode ? 'text-white' : 'text-stone-950 font-bold'}`}>Isaac Lopes</strong>. Sou designer criativa multidisciplinar, focada no desenvolvimento de narrativas digitais e artes visuais contemplativas.
+                    Chamo-me <strong className={`font-serif italic tracking-wide ${isDarkMode ? 'text-white' : 'text-stone-950 font-bold'}`}>Isaac Lopes</strong>. 
                   </p>
                   <p className={`font-sans font-light text-xs leading-relaxed mt-2.5 ${
                     isDarkMode ? 'text-zinc-300' : 'text-stone-700'
                   }`}>
-                    A minha abordagem combina rigor tipográfico com espaços limpos, explorando como a ausência voluntária de elements pode preencher de significado uma experiência virtual. Do desenho de interfaces ao preto-e-branco analógico, cada projeto é uma busca pelo silêncio essencial.
+                    O Ponto de Fuga é um arquivo pessoal de observações. Aqui reúno fotografias, projetos e experiências que marcaram a forma como vejo o mundo.
+                  </p>
+                  <p className={`font-sans font-light text-xs leading-relaxed mt-2.5 ${
+                    isDarkMode ? 'text-zinc-300' : 'text-stone-700'
+                  }`}>
+                    Cada coleção nasce de uma curiosidade diferente: as pessoas que habitam um espaço, a tranquilidade de um passeio sem destino, a presença silenciosa dos animais ou a identidade escondida na arquitetura do quotidiano.
+                  </p>
+                  <p className={`font-sans font-light text-xs leading-relaxed mt-2.5 ${
+                    isDarkMode ? 'text-zinc-300' : 'text-stone-700'
+                  }`}>
+                    Um lugar para guardar aquilo que merece ser visto uma segunda vez.
                   </p>
                   <div className={`mt-5 flex flex-col gap-1.5 font-mono text-[9px] border-t pt-4 ${
                     isDarkMode ? 'border-white/10 text-zinc-500' : 'border-stone-200 text-stone-450 font-bold'
