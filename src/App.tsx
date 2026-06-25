@@ -49,7 +49,10 @@ export const collections = [
     categoryLabel: 'Presença Silenciosa',
     studio: 'ESTÚDIO I',
     studioKey: 'encruzilhada-1',
-    description: 'Uma sequência cinematográfica e contemplativa que narra uma história silenciosa de presença, quietude e a simplicidade de apenas estar.',
+    description: `Uma câmara, um caminho e nenhuma pressa.
+Esta coleção nasceu de um passeio sem mapa, sem plano e sem urgência. São fragmentos de um dia comum, onde a simplicidade se tornou motivo suficiente para parar, observar e existir.
+Porque, às vezes, viver é apenas estar.
+`,
     projects: apenasEstarProjects,
   },
   {
