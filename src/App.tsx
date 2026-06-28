@@ -22,7 +22,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { SpaceSection, Project } from './types';
-import { paisagemProjects, retratoProjects, apenasEstarProjects, arquiteturaProjects } from './data';
+import { paisagemProjects, retratoProjects, apenasEstarProjects, arquiteturaProjects, aquiloQueEscondemosProjects } from './data';
 
 const getRomanNumeral = (num: number) => {
   const map = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
@@ -56,26 +56,15 @@ Porque, às vezes, viver é apenas estar.
     projects: apenasEstarProjects,
   },
   {
-    id: 'collection-3',
-    folderName: 'col-3',
-    title: 'Paisagens',
-    displayTitle: 'Paisagens Silenciosas',
-    categoryLabel: 'Horizontes Contemplativos',
+    id: 'collection-5',
+    folderName: 'aquilo-que-escondemos',
+    title: 'Aquilo que Escondemos',
+    displayTitle: 'Aquilo que Escondemos',
+    categoryLabel: 'Ilustração',
     studio: 'ESTÚDIO II',
     studioKey: 'encruzilhada-2',
-    description: 'Névoas em longa exposição, geometrias da natureza e o silêncio vasto capturado sob perspetivas serenas.',
-    projects: paisagemProjects,
-  },
-  {
-    id: 'collection-4',
-    folderName: 'col-4',
-    title: 'Arquitetura',
-    displayTitle: 'Arquitetura Brutalista',
-    categoryLabel: 'Brutalismo e Espaço',
-    studio: 'ESTÚDIO II',
-    studioKey: 'encruzilhada-2',
-    description: 'A solidez das formas de betão, o jogo rigoroso de sombras e reflexos nas estruturas urbanas contemporâneas.',
-    projects: arquiteturaProjects,
+    description: 'Cada ilustração nasce do encontro entre um traço já existente e a minha linguagem visual. Através da cor e da luz, procuro revelar aquilo que tantas vezes permanece escondido: o desejo, a ternura e a coragem de amar.',
+    projects: aquiloQueEscondemosProjects,
   }
 ].filter(col => col.projects && col.projects.length > 0);
 

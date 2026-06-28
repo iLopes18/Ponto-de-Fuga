@@ -96,3 +96,25 @@ export const apenasEstarProjects: Project[] = [
 export const arquiteturaProjects: Project[] = [
   
 ];
+
+export const aquiloQueEscondemosProjects: Project[] = [
+  {
+    id: 'aqe1',
+    title: 'Escolhe o Teu Veneno',
+    image: '/collection_III/1.webp',
+    year: '2026'
+  },
+  {
+    id: 'aqe2',
+    title: 'Onde a Luz Toca',
+    image: '/collection_III/2.webp',
+    year: '2026'
+  },
+  {
+    id: 'aqe3',
+    title: 'Olhos nos Olhos',
+    image: '/collection_III/3.webp',
+    year: '2026'
+  }
+];
+
